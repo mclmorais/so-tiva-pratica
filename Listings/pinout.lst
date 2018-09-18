@@ -1,0 +1,2212 @@
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"pinout.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.align	1
+  16              		.global	PinoutSet
+  17              		.syntax unified
+  18              		.thumb
+  19              		.thumb_func
+  20              		.fpu softvfp
+  21              		.type	PinoutSet, %function
+  22              	PinoutSet:
+  23              	.LFB0:
+  24              		.file 1 "pinout.c"
+   1:pinout.c      **** //*****************************************************************************
+   2:pinout.c      **** //
+   3:pinout.c      **** // pinout.c - Function to configure the device pins on the EK-TM4C1294XL.
+   4:pinout.c      **** //
+   5:pinout.c      **** // Copyright (c) 2013-2014 Texas Instruments Incorporated.  All rights reserved.
+   6:pinout.c      **** // Software License Agreement
+   7:pinout.c      **** // 
+   8:pinout.c      **** // Texas Instruments (TI) is supplying this software for use solely and
+   9:pinout.c      **** // exclusively on TI's microcontroller products. The software is owned by
+  10:pinout.c      **** // TI and/or its suppliers, and is protected under applicable copyright
+  11:pinout.c      **** // laws. You may not combine this software with "viral" open-source
+  12:pinout.c      **** // software in order to form a larger program.
+  13:pinout.c      **** // 
+  14:pinout.c      **** // THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
+  15:pinout.c      **** // NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
+  16:pinout.c      **** // NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  17:pinout.c      **** // A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
+  18:pinout.c      **** // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
+  19:pinout.c      **** // DAMAGES, FOR ANY REASON WHATSOEVER.
+  20:pinout.c      **** // 
+  21:pinout.c      **** // This is part of revision 2.1.0.12573 of the EK-TM4C1294XL Firmware Package.
+  22:pinout.c      **** //
+  23:pinout.c      **** //*****************************************************************************
+  24:pinout.c      **** 
+  25:pinout.c      **** #include <stdbool.h>
+  26:pinout.c      **** #include <stdint.h>
+  27:pinout.c      **** #include "hw_gpio.h"
+  28:pinout.c      **** #include "hw_memmap.h"
+  29:pinout.c      **** #include "hw_types.h"
+  30:pinout.c      **** #include "driverlib\gpio.h"
+  31:pinout.c      **** #include "driverlib\pin_map.h"
+  32:pinout.c      **** #include "driverlib\rom.h"
+  33:pinout.c      **** #include "driverlib\rom_map.h"
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 2
+
+
+  34:pinout.c      **** #include "driverlib\sysctl.h"
+  35:pinout.c      **** #include "drivers\pinout.h"
+  36:pinout.c      **** 
+  37:pinout.c      **** //*****************************************************************************
+  38:pinout.c      **** //
+  39:pinout.c      **** //! \addtogroup pinout_api
+  40:pinout.c      **** //! @{
+  41:pinout.c      **** //
+  42:pinout.c      **** //*****************************************************************************
+  43:pinout.c      **** 
+  44:pinout.c      **** //*****************************************************************************
+  45:pinout.c      **** //
+  46:pinout.c      **** //! Configures the device pins for the standard usages on the EK-TM4C1294XL.
+  47:pinout.c      **** //!
+  48:pinout.c      **** //! \param bEthernet is a boolean used to determine function of Ethernet pins.
+  49:pinout.c      **** //! If true Ethernet pins are  configured as Ethernet LEDs.  If false GPIO are
+  50:pinout.c      **** //! available for application use.
+  51:pinout.c      **** //! \param bUSB is a boolean used to determine function of USB pins. If true USB
+  52:pinout.c      **** //! pins are configured for USB use.  If false then USB pins are available for
+  53:pinout.c      **** //! application use as GPIO.
+  54:pinout.c      **** //!
+  55:pinout.c      **** //! This function enables the GPIO modules and configures the device pins for
+  56:pinout.c      **** //! the default, standard usages on the EK-TM4C1294XL.  Applications that
+  57:pinout.c      **** //! require alternate configurations of the device pins can either not call
+  58:pinout.c      **** //! this function and take full responsibility for configuring all the device
+  59:pinout.c      **** //! pins, or can reconfigure the required device pins after calling this
+  60:pinout.c      **** //! function.
+  61:pinout.c      **** //!
+  62:pinout.c      **** //! \return None.
+  63:pinout.c      **** //
+  64:pinout.c      **** //*****************************************************************************
+  65:pinout.c      **** void
+  66:pinout.c      **** PinoutSet(bool bEthernet, bool bUSB)
+  67:pinout.c      **** {
+  25              		.loc 1 67 0
+  26              		.cfi_startproc
+  27              		@ args = 0, pretend = 0, frame = 0
+  28              		@ frame_needed = 0, uses_anonymous_args = 0
+  29              	.LVL0:
+  30 0000 70B5     		push	{r4, r5, r6, lr}
+  31              	.LCFI0:
+  32              		.cfi_def_cfa_offset 16
+  33              		.cfi_offset 4, -16
+  34              		.cfi_offset 5, -12
+  35              		.cfi_offset 6, -8
+  36              		.cfi_offset 14, -4
+  37 0002 0546     		mov	r5, r0
+  38 0004 0E46     		mov	r6, r1
+  68:pinout.c      ****     //
+  69:pinout.c      ****     // Enable all the GPIO peripherals.
+  70:pinout.c      ****     //
+  71:pinout.c      ****     ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+  39              		.loc 1 71 0
+  40 0006 604C     		ldr	r4, .L7
+  41 0008 2368     		ldr	r3, [r4]
+  42 000a 9B69     		ldr	r3, [r3, #24]
+  43 000c 5F48     		ldr	r0, .L7+4
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 3
+
+
+  44              	.LVL1:
+  45 000e 9847     		blx	r3
+  46              	.LVL2:
+  72:pinout.c      ****     ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
+  47              		.loc 1 72 0
+  48 0010 2368     		ldr	r3, [r4]
+  49 0012 9B69     		ldr	r3, [r3, #24]
+  50 0014 5E48     		ldr	r0, .L7+8
+  51 0016 9847     		blx	r3
+  52              	.LVL3:
+  73:pinout.c      ****     ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
+  53              		.loc 1 73 0
+  54 0018 2368     		ldr	r3, [r4]
+  55 001a 9B69     		ldr	r3, [r3, #24]
+  56 001c 5D48     		ldr	r0, .L7+12
+  57 001e 9847     		blx	r3
+  58              	.LVL4:
+  74:pinout.c      ****     ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
+  59              		.loc 1 74 0
+  60 0020 2368     		ldr	r3, [r4]
+  61 0022 9B69     		ldr	r3, [r3, #24]
+  62 0024 5C48     		ldr	r0, .L7+16
+  63 0026 9847     		blx	r3
+  64              	.LVL5:
+  75:pinout.c      ****     ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
+  65              		.loc 1 75 0
+  66 0028 2368     		ldr	r3, [r4]
+  67 002a 9B69     		ldr	r3, [r3, #24]
+  68 002c 5B48     		ldr	r0, .L7+20
+  69 002e 9847     		blx	r3
+  70              	.LVL6:
+  76:pinout.c      ****     ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+  71              		.loc 1 76 0
+  72 0030 2368     		ldr	r3, [r4]
+  73 0032 9B69     		ldr	r3, [r3, #24]
+  74 0034 5A48     		ldr	r0, .L7+24
+  75 0036 9847     		blx	r3
+  76              	.LVL7:
+  77:pinout.c      ****     ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOG);
+  77              		.loc 1 77 0
+  78 0038 2368     		ldr	r3, [r4]
+  79 003a 9B69     		ldr	r3, [r3, #24]
+  80 003c 5948     		ldr	r0, .L7+28
+  81 003e 9847     		blx	r3
+  82              	.LVL8:
+  78:pinout.c      ****     ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOH);
+  83              		.loc 1 78 0
+  84 0040 2368     		ldr	r3, [r4]
+  85 0042 9B69     		ldr	r3, [r3, #24]
+  86 0044 5848     		ldr	r0, .L7+32
+  87 0046 9847     		blx	r3
+  88              	.LVL9:
+  79:pinout.c      ****     ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOJ);
+  89              		.loc 1 79 0
+  90 0048 2368     		ldr	r3, [r4]
+  91 004a 9B69     		ldr	r3, [r3, #24]
+  92 004c 5748     		ldr	r0, .L7+36
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 4
+
+
+  93 004e 9847     		blx	r3
+  94              	.LVL10:
+  80:pinout.c      ****     ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOK);
+  95              		.loc 1 80 0
+  96 0050 2368     		ldr	r3, [r4]
+  97 0052 9B69     		ldr	r3, [r3, #24]
+  98 0054 5648     		ldr	r0, .L7+40
+  99 0056 9847     		blx	r3
+ 100              	.LVL11:
+  81:pinout.c      ****     ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOL);
+ 101              		.loc 1 81 0
+ 102 0058 2368     		ldr	r3, [r4]
+ 103 005a 9B69     		ldr	r3, [r3, #24]
+ 104 005c 5548     		ldr	r0, .L7+44
+ 105 005e 9847     		blx	r3
+ 106              	.LVL12:
+  82:pinout.c      ****     ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOM);
+ 107              		.loc 1 82 0
+ 108 0060 2368     		ldr	r3, [r4]
+ 109 0062 9B69     		ldr	r3, [r3, #24]
+ 110 0064 5448     		ldr	r0, .L7+48
+ 111 0066 9847     		blx	r3
+ 112              	.LVL13:
+  83:pinout.c      ****     ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPION);
+ 113              		.loc 1 83 0
+ 114 0068 2368     		ldr	r3, [r4]
+ 115 006a 9B69     		ldr	r3, [r3, #24]
+ 116 006c 5348     		ldr	r0, .L7+52
+ 117 006e 9847     		blx	r3
+ 118              	.LVL14:
+  84:pinout.c      ****     ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOP);
+ 119              		.loc 1 84 0
+ 120 0070 2368     		ldr	r3, [r4]
+ 121 0072 9B69     		ldr	r3, [r3, #24]
+ 122 0074 5248     		ldr	r0, .L7+56
+ 123 0076 9847     		blx	r3
+ 124              	.LVL15:
+  85:pinout.c      ****     ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOQ);
+ 125              		.loc 1 85 0
+ 126 0078 2368     		ldr	r3, [r4]
+ 127 007a 9B69     		ldr	r3, [r3, #24]
+ 128 007c 5148     		ldr	r0, .L7+60
+ 129 007e 9847     		blx	r3
+ 130              	.LVL16:
+  86:pinout.c      **** 
+  87:pinout.c      ****     //
+  88:pinout.c      ****     // PA0-1 are used for UART0.
+  89:pinout.c      ****     //
+  90:pinout.c      ****     ROM_GPIOPinConfigure(GPIO_PA0_U0RX);
+ 131              		.loc 1 90 0
+ 132 0080 243C     		subs	r4, r4, #36
+ 133 0082 2368     		ldr	r3, [r4]
+ 134 0084 9B6E     		ldr	r3, [r3, #104]
+ 135 0086 0120     		movs	r0, #1
+ 136 0088 9847     		blx	r3
+ 137              	.LVL17:
+  91:pinout.c      ****     ROM_GPIOPinConfigure(GPIO_PA1_U0TX);
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 5
+
+
+ 138              		.loc 1 91 0
+ 139 008a 2368     		ldr	r3, [r4]
+ 140 008c 9B6E     		ldr	r3, [r3, #104]
+ 141 008e 40F20140 		movw	r0, #1025
+ 142 0092 9847     		blx	r3
+ 143              	.LVL18:
+  92:pinout.c      ****     ROM_GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+ 144              		.loc 1 92 0
+ 145 0094 2368     		ldr	r3, [r4]
+ 146 0096 5B6D     		ldr	r3, [r3, #84]
+ 147 0098 0321     		movs	r1, #3
+ 148 009a 4FF04020 		mov	r0, #1073758208
+ 149 009e 9847     		blx	r3
+ 150              	.LVL19:
+  93:pinout.c      **** 
+  94:pinout.c      ****     //
+  95:pinout.c      ****     // PB0-1/PD6/PL6-7 are used for USB.
+  96:pinout.c      ****     // PQ4 can be used as a power fault detect on this board but it is not
+  97:pinout.c      ****     // the hardware peripheral power fault input pin.
+  98:pinout.c      ****     //
+  99:pinout.c      ****     if(bUSB)
+ 151              		.loc 1 99 0
+ 152 00a0 002E     		cmp	r6, #0
+ 153 00a2 53D0     		beq	.L2
+ 100:pinout.c      ****     {
+ 101:pinout.c      ****         HWREG(GPIO_PORTD_BASE + GPIO_O_LOCK) = GPIO_LOCK_KEY;
+ 154              		.loc 1 101 0
+ 155 00a4 484B     		ldr	r3, .L7+64
+ 156 00a6 494A     		ldr	r2, .L7+68
+ 157 00a8 1A60     		str	r2, [r3]
+ 102:pinout.c      ****         HWREG(GPIO_PORTD_BASE + GPIO_O_CR) = 0xff;
+ 158              		.loc 1 102 0
+ 159 00aa 0433     		adds	r3, r3, #4
+ 160 00ac FF22     		movs	r2, #255
+ 161 00ae 1A60     		str	r2, [r3]
+ 103:pinout.c      ****         ROM_GPIOPinConfigure(GPIO_PD6_USB0EPEN);
+ 162              		.loc 1 103 0
+ 163 00b0 2368     		ldr	r3, [r4]
+ 164 00b2 9B6E     		ldr	r3, [r3, #104]
+ 165 00b4 4648     		ldr	r0, .L7+72
+ 166 00b6 9847     		blx	r3
+ 167              	.LVL20:
+ 104:pinout.c      ****         ROM_GPIOPinTypeUSBAnalog(GPIO_PORTB_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+ 168              		.loc 1 104 0
+ 169 00b8 2368     		ldr	r3, [r4]
+ 170 00ba 1B6F     		ldr	r3, [r3, #112]
+ 171 00bc 0321     		movs	r1, #3
+ 172 00be 4548     		ldr	r0, .L7+76
+ 173 00c0 9847     		blx	r3
+ 174              	.LVL21:
+ 105:pinout.c      ****         ROM_GPIOPinTypeUSBDigital(GPIO_PORTD_BASE, GPIO_PIN_6);
+ 175              		.loc 1 105 0
+ 176 00c2 2368     		ldr	r3, [r4]
+ 177 00c4 1B6E     		ldr	r3, [r3, #96]
+ 178 00c6 4021     		movs	r1, #64
+ 179 00c8 4348     		ldr	r0, .L7+80
+ 180 00ca 9847     		blx	r3
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 6
+
+
+ 181              	.LVL22:
+ 106:pinout.c      ****         ROM_GPIOPinTypeUSBAnalog(GPIO_PORTL_BASE, GPIO_PIN_6 | GPIO_PIN_7);
+ 182              		.loc 1 106 0
+ 183 00cc 2368     		ldr	r3, [r4]
+ 184 00ce 1B6F     		ldr	r3, [r3, #112]
+ 185 00d0 C021     		movs	r1, #192
+ 186 00d2 4248     		ldr	r0, .L7+84
+ 187 00d4 9847     		blx	r3
+ 188              	.LVL23:
+ 107:pinout.c      ****         ROM_GPIOPinTypeGPIOInput(GPIO_PORTQ_BASE, GPIO_PIN_4);
+ 189              		.loc 1 107 0
+ 190 00d6 2368     		ldr	r3, [r4]
+ 191 00d8 9B6B     		ldr	r3, [r3, #56]
+ 192 00da 1021     		movs	r1, #16
+ 193 00dc 4048     		ldr	r0, .L7+88
+ 194 00de 9847     		blx	r3
+ 195              	.LVL24:
+ 196              	.L3:
+ 108:pinout.c      ****     }
+ 109:pinout.c      ****     else
+ 110:pinout.c      ****     {
+ 111:pinout.c      ****         //
+ 112:pinout.c      ****         // Keep the default config for most pins used by USB.
+ 113:pinout.c      ****         // Add a pull down to PD6 to turn off the TPS2052 switch
+ 114:pinout.c      ****         //
+ 115:pinout.c      ****         ROM_GPIOPinTypeGPIOInput(GPIO_PORTD_BASE, GPIO_PIN_6);
+ 116:pinout.c      ****         MAP_GPIOPadConfigSet(GPIO_PORTD_BASE, GPIO_PIN_6, GPIO_STRENGTH_2MA,
+ 117:pinout.c      ****                              GPIO_PIN_TYPE_STD_WPD);
+ 118:pinout.c      **** 
+ 119:pinout.c      ****     }
+ 120:pinout.c      **** 
+ 121:pinout.c      ****     //
+ 122:pinout.c      ****     // PF0/PF4 are used for Ethernet LEDs.
+ 123:pinout.c      ****     //
+ 124:pinout.c      ****     if(bEthernet)
+ 197              		.loc 1 124 0
+ 198 00e0 002D     		cmp	r5, #0
+ 199 00e2 41D1     		bne	.L6
+ 125:pinout.c      ****     {
+ 126:pinout.c      ****         //
+ 127:pinout.c      ****         // this app wants to configure for ethernet LED function.
+ 128:pinout.c      ****         //
+ 129:pinout.c      ****         ROM_GPIOPinConfigure(GPIO_PF0_EN0LED0);
+ 130:pinout.c      ****         ROM_GPIOPinConfigure(GPIO_PF4_EN0LED1);
+ 131:pinout.c      **** 
+ 132:pinout.c      ****         GPIOPinTypeEthernetLED(GPIO_PORTF_BASE, GPIO_PIN_0 | GPIO_PIN_4);
+ 133:pinout.c      **** 
+ 134:pinout.c      ****     }
+ 135:pinout.c      ****     else
+ 136:pinout.c      ****     {
+ 137:pinout.c      **** 
+ 138:pinout.c      ****         //
+ 139:pinout.c      ****         // This app does not want Ethernet LED function so configure as
+ 140:pinout.c      ****         // standard outputs for LED driving.
+ 141:pinout.c      ****         //
+ 142:pinout.c      ****         ROM_GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_0 | GPIO_PIN_4);
+ 200              		.loc 1 142 0
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 7
+
+
+ 201 00e4 3F4C     		ldr	r4, .L7+92
+ 202 00e6 404D     		ldr	r5, .L7+96
+ 203 00e8 2B68     		ldr	r3, [r5]
+ 204 00ea DB6B     		ldr	r3, [r3, #60]
+ 205 00ec 1121     		movs	r1, #17
+ 206 00ee 2046     		mov	r0, r4
+ 207 00f0 9847     		blx	r3
+ 208              	.LVL25:
+ 143:pinout.c      **** 
+ 144:pinout.c      ****         //
+ 145:pinout.c      ****         // Default the LEDs to OFF.
+ 146:pinout.c      ****         //
+ 147:pinout.c      ****         ROM_GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0 | GPIO_PIN_4, 0);
+ 209              		.loc 1 147 0
+ 210 00f2 2B68     		ldr	r3, [r5]
+ 211 00f4 1B68     		ldr	r3, [r3]
+ 212 00f6 0022     		movs	r2, #0
+ 213 00f8 1121     		movs	r1, #17
+ 214 00fa 2046     		mov	r0, r4
+ 215 00fc 9847     		blx	r3
+ 216              	.LVL26:
+ 148:pinout.c      ****         MAP_GPIOPadConfigSet(GPIO_PORTF_BASE, GPIO_PIN_0 | GPIO_PIN_4,
+ 217              		.loc 1 148 0
+ 218 00fe 0823     		movs	r3, #8
+ 219 0100 7722     		movs	r2, #119
+ 220 0102 1121     		movs	r1, #17
+ 221 0104 2046     		mov	r0, r4
+ 222 0106 FFF7FEFF 		bl	GPIOPadConfigSet
+ 223              	.LVL27:
+ 224              	.L5:
+ 149:pinout.c      ****                              GPIO_STRENGTH_12MA, GPIO_PIN_TYPE_STD);
+ 150:pinout.c      **** 
+ 151:pinout.c      **** 
+ 152:pinout.c      ****     }
+ 153:pinout.c      **** 
+ 154:pinout.c      ****     //
+ 155:pinout.c      ****     // PJ0 and J1 are used for user buttons
+ 156:pinout.c      ****     //
+ 157:pinout.c      ****     ROM_GPIOPinTypeGPIOInput(GPIO_PORTJ_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+ 225              		.loc 1 157 0
+ 226 010a 384D     		ldr	r5, .L7+100
+ 227 010c 364C     		ldr	r4, .L7+96
+ 228 010e 2368     		ldr	r3, [r4]
+ 229 0110 9B6B     		ldr	r3, [r3, #56]
+ 230 0112 0321     		movs	r1, #3
+ 231 0114 2846     		mov	r0, r5
+ 232 0116 9847     		blx	r3
+ 233              	.LVL28:
+ 158:pinout.c      ****     ROM_GPIOPinWrite(GPIO_PORTJ_BASE, GPIO_PIN_0 | GPIO_PIN_1, 0);
+ 234              		.loc 1 158 0
+ 235 0118 2368     		ldr	r3, [r4]
+ 236 011a 1B68     		ldr	r3, [r3]
+ 237 011c 0022     		movs	r2, #0
+ 238 011e 0321     		movs	r1, #3
+ 239 0120 2846     		mov	r0, r5
+ 240 0122 9847     		blx	r3
+ 241              	.LVL29:
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 8
+
+
+ 159:pinout.c      **** 
+ 160:pinout.c      ****     //
+ 161:pinout.c      ****     // PN0 and PN1 are used for USER LEDs.
+ 162:pinout.c      ****     //
+ 163:pinout.c      ****     ROM_GPIOPinTypeGPIOOutput(GPIO_PORTN_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+ 242              		.loc 1 163 0
+ 243 0124 05F51C35 		add	r5, r5, #159744
+ 244 0128 2368     		ldr	r3, [r4]
+ 245 012a DB6B     		ldr	r3, [r3, #60]
+ 246 012c 0321     		movs	r1, #3
+ 247 012e 2846     		mov	r0, r5
+ 248 0130 9847     		blx	r3
+ 249              	.LVL30:
+ 164:pinout.c      ****     MAP_GPIOPadConfigSet(GPIO_PORTN_BASE, GPIO_PIN_0 | GPIO_PIN_1,
+ 250              		.loc 1 164 0
+ 251 0132 0823     		movs	r3, #8
+ 252 0134 7722     		movs	r2, #119
+ 253 0136 0321     		movs	r1, #3
+ 254 0138 2846     		mov	r0, r5
+ 255 013a FFF7FEFF 		bl	GPIOPadConfigSet
+ 256              	.LVL31:
+ 165:pinout.c      ****                              GPIO_STRENGTH_12MA, GPIO_PIN_TYPE_STD);
+ 166:pinout.c      **** 
+ 167:pinout.c      ****     //
+ 168:pinout.c      ****     // Default the LEDs to OFF.
+ 169:pinout.c      ****     //
+ 170:pinout.c      ****     ROM_GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_0 | GPIO_PIN_1, 0);
+ 257              		.loc 1 170 0
+ 258 013e 2368     		ldr	r3, [r4]
+ 259 0140 1B68     		ldr	r3, [r3]
+ 260 0142 0022     		movs	r2, #0
+ 261 0144 0321     		movs	r1, #3
+ 262 0146 2846     		mov	r0, r5
+ 263 0148 9847     		blx	r3
+ 264              	.LVL32:
+ 171:pinout.c      **** }
+ 265              		.loc 1 171 0
+ 266 014a 70BD     		pop	{r4, r5, r6, pc}
+ 267              	.L2:
+ 115:pinout.c      ****         MAP_GPIOPadConfigSet(GPIO_PORTD_BASE, GPIO_PIN_6, GPIO_STRENGTH_2MA,
+ 268              		.loc 1 115 0
+ 269 014c 224C     		ldr	r4, .L7+80
+ 270 014e 264B     		ldr	r3, .L7+96
+ 271 0150 1B68     		ldr	r3, [r3]
+ 272 0152 9B6B     		ldr	r3, [r3, #56]
+ 273 0154 4021     		movs	r1, #64
+ 274 0156 2046     		mov	r0, r4
+ 275 0158 9847     		blx	r3
+ 276              	.LVL33:
+ 116:pinout.c      ****                              GPIO_PIN_TYPE_STD_WPD);
+ 277              		.loc 1 116 0
+ 278 015a 0C23     		movs	r3, #12
+ 279 015c 0122     		movs	r2, #1
+ 280 015e 4021     		movs	r1, #64
+ 281 0160 2046     		mov	r0, r4
+ 282 0162 FFF7FEFF 		bl	GPIOPadConfigSet
+ 283              	.LVL34:
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 9
+
+
+ 284 0166 BBE7     		b	.L3
+ 285              	.L6:
+ 129:pinout.c      ****         ROM_GPIOPinConfigure(GPIO_PF4_EN0LED1);
+ 286              		.loc 1 129 0
+ 287 0168 1F4C     		ldr	r4, .L7+96
+ 288 016a 2368     		ldr	r3, [r4]
+ 289 016c 9B6E     		ldr	r3, [r3, #104]
+ 290 016e 4FF00510 		mov	r0, #327685
+ 291 0172 9847     		blx	r3
+ 292              	.LVL35:
+ 130:pinout.c      **** 
+ 293              		.loc 1 130 0
+ 294 0174 2368     		ldr	r3, [r4]
+ 295 0176 9B6E     		ldr	r3, [r3, #104]
+ 296 0178 1D48     		ldr	r0, .L7+104
+ 297 017a 9847     		blx	r3
+ 298              	.LVL36:
+ 132:pinout.c      **** 
+ 299              		.loc 1 132 0
+ 300 017c 1121     		movs	r1, #17
+ 301 017e 1948     		ldr	r0, .L7+92
+ 302 0180 FFF7FEFF 		bl	GPIOPinTypeEthernetLED
+ 303              	.LVL37:
+ 304 0184 C1E7     		b	.L5
+ 305              	.L8:
+ 306 0186 00BF     		.align	2
+ 307              	.L7:
+ 308 0188 44000001 		.word	16777284
+ 309 018c 000800F0 		.word	-268433408
+ 310 0190 010800F0 		.word	-268433407
+ 311 0194 020800F0 		.word	-268433406
+ 312 0198 030800F0 		.word	-268433405
+ 313 019c 040800F0 		.word	-268433404
+ 314 01a0 050800F0 		.word	-268433403
+ 315 01a4 060800F0 		.word	-268433402
+ 316 01a8 070800F0 		.word	-268433401
+ 317 01ac 080800F0 		.word	-268433400
+ 318 01b0 090800F0 		.word	-268433399
+ 319 01b4 0A0800F0 		.word	-268433398
+ 320 01b8 0B0800F0 		.word	-268433397
+ 321 01bc 0C0800F0 		.word	-268433396
+ 322 01c0 0D0800F0 		.word	-268433395
+ 323 01c4 0E0800F0 		.word	-268433394
+ 324 01c8 20750040 		.word	1073771808
+ 325 01cc 4B434F4C 		.word	1280262987
+ 326 01d0 05180300 		.word	202757
+ 327 01d4 00500040 		.word	1073762304
+ 328 01d8 00700040 		.word	1073770496
+ 329 01dc 00200640 		.word	1074143232
+ 330 01e0 00600640 		.word	1074159616
+ 331 01e4 00500240 		.word	1073893376
+ 332 01e8 20000001 		.word	16777248
+ 333 01ec 00D00340 		.word	1073991680
+ 334 01f0 05100500 		.word	331781
+ 335              		.cfi_endproc
+ 336              	.LFE0:
+ 337              		.size	PinoutSet, .-PinoutSet
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 10
+
+
+ 338              		.align	1
+ 339              		.global	LEDWrite
+ 340              		.syntax unified
+ 341              		.thumb
+ 342              		.thumb_func
+ 343              		.fpu softvfp
+ 344              		.type	LEDWrite, %function
+ 345              	LEDWrite:
+ 346              	.LFB1:
+ 172:pinout.c      **** 
+ 173:pinout.c      **** //*****************************************************************************
+ 174:pinout.c      **** //
+ 175:pinout.c      **** //! This function writes a state to the LED bank.
+ 176:pinout.c      **** //!
+ 177:pinout.c      **** //! \param ui32LEDMask is a bit mask for which GPIO should be changed by this
+ 178:pinout.c      **** //! call.
+ 179:pinout.c      **** //! \param ui32LEDValue is the new value to be applied to the LEDs after the
+ 180:pinout.c      **** //! ui32LEDMask is applied.
+ 181:pinout.c      **** //!
+ 182:pinout.c      **** //! The first parameter acts as a mask.  Only bits in the mask that are set
+ 183:pinout.c      **** //! will correspond to LEDs that may change.  LEDs with a mask that is not set
+ 184:pinout.c      **** //! will not change. This works the same as GPIOPinWrite. After applying the
+ 185:pinout.c      **** //! mask the setting for each unmasked LED is written to the corresponding
+ 186:pinout.c      **** //! LED port pin via GPIOPinWrite.
+ 187:pinout.c      **** //!
+ 188:pinout.c      **** //! \return None.
+ 189:pinout.c      **** //
+ 190:pinout.c      **** //*****************************************************************************
+ 191:pinout.c      **** void
+ 192:pinout.c      **** LEDWrite(uint32_t ui32LEDMask, uint32_t ui32LEDValue)
+ 193:pinout.c      **** {
+ 347              		.loc 1 193 0
+ 348              		.cfi_startproc
+ 349              		@ args = 0, pretend = 0, frame = 0
+ 350              		@ frame_needed = 0, uses_anonymous_args = 0
+ 351              	.LVL38:
+ 352 01f4 38B5     		push	{r3, r4, r5, lr}
+ 353              	.LCFI1:
+ 354              		.cfi_def_cfa_offset 16
+ 355              		.cfi_offset 3, -16
+ 356              		.cfi_offset 4, -12
+ 357              		.cfi_offset 5, -8
+ 358              		.cfi_offset 14, -4
+ 359 01f6 0446     		mov	r4, r0
+ 360 01f8 0D46     		mov	r5, r1
+ 194:pinout.c      **** 
+ 195:pinout.c      ****     //
+ 196:pinout.c      ****     // Check the mask and set or clear the LED as directed.
+ 197:pinout.c      ****     //
+ 198:pinout.c      ****     if(ui32LEDMask & CLP_D1)
+ 361              		.loc 1 198 0
+ 362 01fa 10F0010F 		tst	r0, #1
+ 363 01fe 09D0     		beq	.L10
+ 199:pinout.c      ****     {
+ 200:pinout.c      ****         if(ui32LEDValue & CLP_D1)
+ 364              		.loc 1 200 0
+ 365 0200 11F0010F 		tst	r1, #1
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 11
+
+
+ 201:pinout.c      ****         {
+ 202:pinout.c      ****             GPIOPinWrite(CLP_D1_PORT, CLP_D1_PIN, CLP_D1_PIN);
+ 366              		.loc 1 202 0
+ 367 0204 19BF     		ittee	ne
+ 368 0206 0222     		movne	r2, #2
+ 369 0208 1146     		movne	r1, r2
+ 370              	.LVL39:
+ 203:pinout.c      ****         }
+ 204:pinout.c      ****         else
+ 205:pinout.c      ****         {
+ 206:pinout.c      ****             GPIOPinWrite(CLP_D1_PORT, CLP_D1_PIN, 0);
+ 371              		.loc 1 206 0
+ 372 020a 0022     		moveq	r2, #0
+ 373 020c 0221     		moveq	r1, #2
+ 374 020e 1548     		ldr	r0, .L18
+ 375              	.LVL40:
+ 376 0210 FFF7FEFF 		bl	GPIOPinWrite
+ 377              	.LVL41:
+ 378              	.L10:
+ 207:pinout.c      ****         }
+ 208:pinout.c      ****     }
+ 209:pinout.c      **** 
+ 210:pinout.c      ****     if(ui32LEDMask & CLP_D2)
+ 379              		.loc 1 210 0
+ 380 0214 14F0020F 		tst	r4, #2
+ 381 0218 09D0     		beq	.L12
+ 211:pinout.c      ****     {
+ 212:pinout.c      ****         if(ui32LEDValue & CLP_D2)
+ 382              		.loc 1 212 0
+ 383 021a 15F0020F 		tst	r5, #2
+ 213:pinout.c      ****         {
+ 214:pinout.c      ****             GPIOPinWrite(CLP_D2_PORT, CLP_D2_PIN, CLP_D2_PIN);
+ 384              		.loc 1 214 0
+ 385 021e 19BF     		ittee	ne
+ 386 0220 0122     		movne	r2, #1
+ 387 0222 1146     		movne	r1, r2
+ 215:pinout.c      ****         }
+ 216:pinout.c      ****         else
+ 217:pinout.c      ****         {
+ 218:pinout.c      ****             GPIOPinWrite(CLP_D2_PORT, CLP_D2_PIN, 0);
+ 388              		.loc 1 218 0
+ 389 0224 0022     		moveq	r2, #0
+ 390 0226 0121     		moveq	r1, #1
+ 391 0228 0E48     		ldr	r0, .L18
+ 392 022a FFF7FEFF 		bl	GPIOPinWrite
+ 393              	.LVL42:
+ 394              	.L12:
+ 219:pinout.c      ****         }
+ 220:pinout.c      ****     }
+ 221:pinout.c      **** 
+ 222:pinout.c      ****     if(ui32LEDMask & CLP_D3)
+ 395              		.loc 1 222 0
+ 396 022e 14F0040F 		tst	r4, #4
+ 397 0232 09D0     		beq	.L14
+ 223:pinout.c      ****     {
+ 224:pinout.c      ****         if(ui32LEDValue & CLP_D3)
+ 398              		.loc 1 224 0
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 12
+
+
+ 399 0234 15F0040F 		tst	r5, #4
+ 225:pinout.c      ****         {
+ 226:pinout.c      ****             GPIOPinWrite(CLP_D3_PORT, CLP_D3_PIN, CLP_D3_PIN);
+ 400              		.loc 1 226 0
+ 401 0238 19BF     		ittee	ne
+ 402 023a 1022     		movne	r2, #16
+ 403 023c 1146     		movne	r1, r2
+ 227:pinout.c      ****         }
+ 228:pinout.c      ****         else
+ 229:pinout.c      ****         {
+ 230:pinout.c      ****             GPIOPinWrite(CLP_D3_PORT, CLP_D3_PIN, 0);
+ 404              		.loc 1 230 0
+ 405 023e 0022     		moveq	r2, #0
+ 406 0240 1021     		moveq	r1, #16
+ 407 0242 0948     		ldr	r0, .L18+4
+ 408 0244 FFF7FEFF 		bl	GPIOPinWrite
+ 409              	.LVL43:
+ 410              	.L14:
+ 231:pinout.c      ****         }
+ 232:pinout.c      ****     }
+ 233:pinout.c      **** 
+ 234:pinout.c      ****     if(ui32LEDMask & CLP_D4)
+ 411              		.loc 1 234 0
+ 412 0248 14F0080F 		tst	r4, #8
+ 413 024c 09D0     		beq	.L9
+ 235:pinout.c      ****     {
+ 236:pinout.c      ****         if(ui32LEDValue & CLP_D4)
+ 414              		.loc 1 236 0
+ 415 024e 15F0080F 		tst	r5, #8
+ 237:pinout.c      ****         {
+ 238:pinout.c      ****             GPIOPinWrite(CLP_D4_PORT, CLP_D4_PIN, CLP_D4_PIN);
+ 416              		.loc 1 238 0
+ 417 0252 19BF     		ittee	ne
+ 418 0254 0122     		movne	r2, #1
+ 419 0256 1146     		movne	r1, r2
+ 239:pinout.c      ****         }
+ 240:pinout.c      ****         else
+ 241:pinout.c      ****         {
+ 242:pinout.c      ****             GPIOPinWrite(CLP_D4_PORT, CLP_D4_PIN, 0);
+ 420              		.loc 1 242 0
+ 421 0258 0022     		moveq	r2, #0
+ 422 025a 0121     		moveq	r1, #1
+ 423 025c 0248     		ldr	r0, .L18+4
+ 424 025e FFF7FEFF 		bl	GPIOPinWrite
+ 425              	.LVL44:
+ 426              	.L9:
+ 243:pinout.c      ****         }
+ 244:pinout.c      ****     }
+ 245:pinout.c      **** }
+ 427              		.loc 1 245 0
+ 428 0262 38BD     		pop	{r3, r4, r5, pc}
+ 429              	.LVL45:
+ 430              	.L19:
+ 431              		.align	2
+ 432              	.L18:
+ 433 0264 00400640 		.word	1074151424
+ 434 0268 00500240 		.word	1073893376
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 13
+
+
+ 435              		.cfi_endproc
+ 436              	.LFE1:
+ 437              		.size	LEDWrite, .-LEDWrite
+ 438              		.align	1
+ 439              		.global	LEDRead
+ 440              		.syntax unified
+ 441              		.thumb
+ 442              		.thumb_func
+ 443              		.fpu softvfp
+ 444              		.type	LEDRead, %function
+ 445              	LEDRead:
+ 446              	.LFB2:
+ 246:pinout.c      **** 
+ 247:pinout.c      **** //*****************************************************************************
+ 248:pinout.c      **** //
+ 249:pinout.c      **** //! This function reads the state to the LED bank.
+ 250:pinout.c      **** //!
+ 251:pinout.c      **** //! \param pui32LEDValue is a pointer to where the LED value will be stored.
+ 252:pinout.c      **** //!
+ 253:pinout.c      **** //! This function reads the state of the CLP LEDs and stores that state
+ 254:pinout.c      **** //! information into the variable pointed to by pui32LEDValue.
+ 255:pinout.c      **** //!
+ 256:pinout.c      **** //! \return None.
+ 257:pinout.c      **** //
+ 258:pinout.c      **** //*****************************************************************************
+ 259:pinout.c      **** void LEDRead(uint32_t *pui32LEDValue)
+ 260:pinout.c      **** {
+ 447              		.loc 1 260 0
+ 448              		.cfi_startproc
+ 449              		@ args = 0, pretend = 0, frame = 0
+ 450              		@ frame_needed = 0, uses_anonymous_args = 0
+ 451              	.LVL46:
+ 452 026c 10B5     		push	{r4, lr}
+ 453              	.LCFI2:
+ 454              		.cfi_def_cfa_offset 8
+ 455              		.cfi_offset 4, -8
+ 456              		.cfi_offset 14, -4
+ 457 026e 0446     		mov	r4, r0
+ 261:pinout.c      ****     *pui32LEDValue = 0;
+ 458              		.loc 1 261 0
+ 459 0270 0023     		movs	r3, #0
+ 460 0272 0360     		str	r3, [r0]
+ 262:pinout.c      **** 
+ 263:pinout.c      ****     //
+ 264:pinout.c      ****     // Read the pin state and set the variable bit if needed.
+ 265:pinout.c      ****     //
+ 266:pinout.c      ****     if(GPIOPinRead(CLP_D4_PORT, CLP_D4_PIN))
+ 461              		.loc 1 266 0
+ 462 0274 0121     		movs	r1, #1
+ 463 0276 1248     		ldr	r0, .L25
+ 464              	.LVL47:
+ 465 0278 FFF7FEFF 		bl	GPIOPinRead
+ 466              	.LVL48:
+ 467 027c 18B1     		cbz	r0, .L21
+ 267:pinout.c      ****     {
+ 268:pinout.c      ****         *pui32LEDValue |= CLP_D4;
+ 468              		.loc 1 268 0
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 14
+
+
+ 469 027e 2368     		ldr	r3, [r4]
+ 470 0280 43F00803 		orr	r3, r3, #8
+ 471 0284 2360     		str	r3, [r4]
+ 472              	.L21:
+ 269:pinout.c      ****     }
+ 270:pinout.c      **** 
+ 271:pinout.c      ****     //
+ 272:pinout.c      ****     // Read the pin state and set the variable bit if needed.
+ 273:pinout.c      ****     //
+ 274:pinout.c      ****     if(GPIOPinRead(CLP_D3_PORT, CLP_D3_PIN))
+ 473              		.loc 1 274 0
+ 474 0286 1021     		movs	r1, #16
+ 475 0288 0D48     		ldr	r0, .L25
+ 476 028a FFF7FEFF 		bl	GPIOPinRead
+ 477              	.LVL49:
+ 478 028e 18B1     		cbz	r0, .L22
+ 275:pinout.c      ****     {
+ 276:pinout.c      ****         *pui32LEDValue |= CLP_D3;
+ 479              		.loc 1 276 0
+ 480 0290 2368     		ldr	r3, [r4]
+ 481 0292 43F00403 		orr	r3, r3, #4
+ 482 0296 2360     		str	r3, [r4]
+ 483              	.L22:
+ 277:pinout.c      ****     }
+ 278:pinout.c      **** 
+ 279:pinout.c      ****     //
+ 280:pinout.c      ****     // Read the pin state and set the variable bit if needed.
+ 281:pinout.c      ****     //
+ 282:pinout.c      ****     if(GPIOPinRead(CLP_D2_PORT, CLP_D2_PIN))
+ 484              		.loc 1 282 0
+ 485 0298 0121     		movs	r1, #1
+ 486 029a 0A48     		ldr	r0, .L25+4
+ 487 029c FFF7FEFF 		bl	GPIOPinRead
+ 488              	.LVL50:
+ 489 02a0 18B1     		cbz	r0, .L23
+ 283:pinout.c      ****     {
+ 284:pinout.c      ****         *pui32LEDValue |= CLP_D2;
+ 490              		.loc 1 284 0
+ 491 02a2 2368     		ldr	r3, [r4]
+ 492 02a4 43F00203 		orr	r3, r3, #2
+ 493 02a8 2360     		str	r3, [r4]
+ 494              	.L23:
+ 285:pinout.c      ****     }
+ 286:pinout.c      **** 
+ 287:pinout.c      ****     //
+ 288:pinout.c      ****     // Read the pin state and set the variable bit if needed.
+ 289:pinout.c      ****     //
+ 290:pinout.c      ****     if(GPIOPinRead(CLP_D1_PORT, CLP_D1_PIN))
+ 495              		.loc 1 290 0
+ 496 02aa 0221     		movs	r1, #2
+ 497 02ac 0548     		ldr	r0, .L25+4
+ 498 02ae FFF7FEFF 		bl	GPIOPinRead
+ 499              	.LVL51:
+ 500 02b2 18B1     		cbz	r0, .L20
+ 291:pinout.c      ****     {
+ 292:pinout.c      ****         *pui32LEDValue |= CLP_D1;
+ 501              		.loc 1 292 0
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 15
+
+
+ 502 02b4 2368     		ldr	r3, [r4]
+ 503 02b6 43F00103 		orr	r3, r3, #1
+ 504 02ba 2360     		str	r3, [r4]
+ 505              	.L20:
+ 293:pinout.c      ****     }
+ 294:pinout.c      **** }
+ 506              		.loc 1 294 0
+ 507 02bc 10BD     		pop	{r4, pc}
+ 508              	.LVL52:
+ 509              	.L26:
+ 510 02be 00BF     		.align	2
+ 511              	.L25:
+ 512 02c0 00500240 		.word	1073893376
+ 513 02c4 00400640 		.word	1074151424
+ 514              		.cfi_endproc
+ 515              	.LFE2:
+ 516              		.size	LEDRead, .-LEDRead
+ 517              	.Letext0:
+ 518              		.file 2 "c:\\program files (x86)\\gnu tools arm embedded\\7 2018-q2-update\\arm-none-eabi\\include
+ 519              		.file 3 "c:\\program files (x86)\\gnu tools arm embedded\\7 2018-q2-update\\arm-none-eabi\\include
+ 520              		.file 4 "./inc/driverlib\\gpio.h"
+ 521              		.section	.debug_info,"",%progbits
+ 522              	.Ldebug_info0:
+ 523 0000 47050000 		.4byte	0x547
+ 524 0004 0200     		.2byte	0x2
+ 525 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 526 000a 04       		.byte	0x4
+ 527 000b 01       		.uleb128 0x1
+ 528 000c 56010000 		.4byte	.LASF24
+ 529 0010 0C       		.byte	0xc
+ 530 0011 B9000000 		.4byte	.LASF25
+ 531 0015 3F000000 		.4byte	.LASF26
+ 532 0019 00000000 		.4byte	.Ltext0
+ 533 001d C8020000 		.4byte	.Letext0
+ 534 0021 00000000 		.4byte	.Ldebug_line0
+ 535 0025 02       		.uleb128 0x2
+ 536 0026 01       		.byte	0x1
+ 537 0027 06       		.byte	0x6
+ 538 0028 F0010000 		.4byte	.LASF0
+ 539 002c 02       		.uleb128 0x2
+ 540 002d 01       		.byte	0x1
+ 541 002e 08       		.byte	0x8
+ 542 002f 7B000000 		.4byte	.LASF1
+ 543 0033 02       		.uleb128 0x2
+ 544 0034 02       		.byte	0x2
+ 545 0035 05       		.byte	0x5
+ 546 0036 39010000 		.4byte	.LASF2
+ 547 003a 02       		.uleb128 0x2
+ 548 003b 02       		.byte	0x2
+ 549 003c 07       		.byte	0x7
+ 550 003d 9B000000 		.4byte	.LASF3
+ 551 0041 02       		.uleb128 0x2
+ 552 0042 04       		.byte	0x4
+ 553 0043 05       		.byte	0x5
+ 554 0044 1B000000 		.4byte	.LASF4
+ 555 0048 03       		.uleb128 0x3
+ 556 0049 AE000000 		.4byte	.LASF9
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 16
+
+
+ 557 004d 02       		.byte	0x2
+ 558 004e 4F       		.byte	0x4f
+ 559 004f 53000000 		.4byte	0x53
+ 560 0053 02       		.uleb128 0x2
+ 561 0054 04       		.byte	0x4
+ 562 0055 07       		.byte	0x7
+ 563 0056 89000000 		.4byte	.LASF5
+ 564 005a 02       		.uleb128 0x2
+ 565 005b 08       		.byte	0x8
+ 566 005c 05       		.byte	0x5
+ 567 005d FB000000 		.4byte	.LASF6
+ 568 0061 02       		.uleb128 0x2
+ 569 0062 08       		.byte	0x8
+ 570 0063 07       		.byte	0x7
+ 571 0064 CF000000 		.4byte	.LASF7
+ 572 0068 04       		.uleb128 0x4
+ 573 0069 04       		.byte	0x4
+ 574 006a 05       		.byte	0x5
+ 575 006b 696E7400 		.ascii	"int\000"
+ 576 006f 02       		.uleb128 0x2
+ 577 0070 04       		.byte	0x4
+ 578 0071 07       		.byte	0x7
+ 579 0072 C2000000 		.4byte	.LASF8
+ 580 0076 03       		.uleb128 0x3
+ 581 0077 4D010000 		.4byte	.LASF10
+ 582 007b 03       		.byte	0x3
+ 583 007c 30       		.byte	0x30
+ 584 007d 48000000 		.4byte	0x48
+ 585 0081 05       		.uleb128 0x5
+ 586 0082 01       		.byte	0x1
+ 587 0083 31010000 		.4byte	.LASF11
+ 588 0087 01       		.byte	0x1
+ 589 0088 0301     		.2byte	0x103
+ 590 008a 01       		.byte	0x1
+ 591 008b 6C020000 		.4byte	.LFB2
+ 592 008f C8020000 		.4byte	.LFE2
+ 593 0093 00000000 		.4byte	.LLST6
+ 594 0097 01       		.byte	0x1
+ 595 0098 19010000 		.4byte	0x119
+ 596 009c 06       		.uleb128 0x6
+ 597 009d 31000000 		.4byte	.LASF13
+ 598 00a1 01       		.byte	0x1
+ 599 00a2 0301     		.2byte	0x103
+ 600 00a4 19010000 		.4byte	0x119
+ 601 00a8 20000000 		.4byte	.LLST7
+ 602 00ac 07       		.uleb128 0x7
+ 603 00ad 7C020000 		.4byte	.LVL48
+ 604 00b1 16050000 		.4byte	0x516
+ 605 00b5 C8000000 		.4byte	0xc8
+ 606 00b9 08       		.uleb128 0x8
+ 607 00ba 01       		.byte	0x1
+ 608 00bb 50       		.byte	0x50
+ 609 00bc 05       		.byte	0x5
+ 610 00bd 0C       		.byte	0xc
+ 611 00be 00500240 		.4byte	0x40025000
+ 612 00c2 08       		.uleb128 0x8
+ 613 00c3 01       		.byte	0x1
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 17
+
+
+ 614 00c4 51       		.byte	0x51
+ 615 00c5 01       		.byte	0x1
+ 616 00c6 31       		.byte	0x31
+ 617 00c7 00       		.byte	0
+ 618 00c8 07       		.uleb128 0x7
+ 619 00c9 8E020000 		.4byte	.LVL49
+ 620 00cd 16050000 		.4byte	0x516
+ 621 00d1 E4000000 		.4byte	0xe4
+ 622 00d5 08       		.uleb128 0x8
+ 623 00d6 01       		.byte	0x1
+ 624 00d7 50       		.byte	0x50
+ 625 00d8 05       		.byte	0x5
+ 626 00d9 0C       		.byte	0xc
+ 627 00da 00500240 		.4byte	0x40025000
+ 628 00de 08       		.uleb128 0x8
+ 629 00df 01       		.byte	0x1
+ 630 00e0 51       		.byte	0x51
+ 631 00e1 01       		.byte	0x1
+ 632 00e2 40       		.byte	0x40
+ 633 00e3 00       		.byte	0
+ 634 00e4 07       		.uleb128 0x7
+ 635 00e5 A0020000 		.4byte	.LVL50
+ 636 00e9 16050000 		.4byte	0x516
+ 637 00ed 00010000 		.4byte	0x100
+ 638 00f1 08       		.uleb128 0x8
+ 639 00f2 01       		.byte	0x1
+ 640 00f3 50       		.byte	0x50
+ 641 00f4 05       		.byte	0x5
+ 642 00f5 0C       		.byte	0xc
+ 643 00f6 00400640 		.4byte	0x40064000
+ 644 00fa 08       		.uleb128 0x8
+ 645 00fb 01       		.byte	0x1
+ 646 00fc 51       		.byte	0x51
+ 647 00fd 01       		.byte	0x1
+ 648 00fe 31       		.byte	0x31
+ 649 00ff 00       		.byte	0
+ 650 0100 09       		.uleb128 0x9
+ 651 0101 B2020000 		.4byte	.LVL51
+ 652 0105 16050000 		.4byte	0x516
+ 653 0109 08       		.uleb128 0x8
+ 654 010a 01       		.byte	0x1
+ 655 010b 50       		.byte	0x50
+ 656 010c 05       		.byte	0x5
+ 657 010d 0C       		.byte	0xc
+ 658 010e 00400640 		.4byte	0x40064000
+ 659 0112 08       		.uleb128 0x8
+ 660 0113 01       		.byte	0x1
+ 661 0114 51       		.byte	0x51
+ 662 0115 01       		.byte	0x1
+ 663 0116 32       		.byte	0x32
+ 664 0117 00       		.byte	0
+ 665 0118 00       		.byte	0
+ 666 0119 0A       		.uleb128 0xa
+ 667 011a 04       		.byte	0x4
+ 668 011b 76000000 		.4byte	0x76
+ 669 011f 0B       		.uleb128 0xb
+ 670 0120 01       		.byte	0x1
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 18
+
+
+ 671 0121 F2000000 		.4byte	.LASF12
+ 672 0125 01       		.byte	0x1
+ 673 0126 C0       		.byte	0xc0
+ 674 0127 01       		.byte	0x1
+ 675 0128 F4010000 		.4byte	.LFB1
+ 676 012c 6C020000 		.4byte	.LFE1
+ 677 0130 4C000000 		.4byte	.LLST3
+ 678 0134 01       		.byte	0x1
+ 679 0135 B0010000 		.4byte	0x1b0
+ 680 0139 0C       		.uleb128 0xc
+ 681 013a E6000000 		.4byte	.LASF14
+ 682 013e 01       		.byte	0x1
+ 683 013f C0       		.byte	0xc0
+ 684 0140 76000000 		.4byte	0x76
+ 685 0144 6C000000 		.4byte	.LLST4
+ 686 0148 0C       		.uleb128 0xc
+ 687 0149 E3010000 		.4byte	.LASF15
+ 688 014d 01       		.byte	0x1
+ 689 014e C0       		.byte	0xc0
+ 690 014f 76000000 		.4byte	0x76
+ 691 0153 98000000 		.4byte	.LLST5
+ 692 0157 07       		.uleb128 0x7
+ 693 0158 14020000 		.4byte	.LVL41
+ 694 015c 23050000 		.4byte	0x523
+ 695 0160 6E010000 		.4byte	0x16e
+ 696 0164 08       		.uleb128 0x8
+ 697 0165 01       		.byte	0x1
+ 698 0166 50       		.byte	0x50
+ 699 0167 05       		.byte	0x5
+ 700 0168 0C       		.byte	0xc
+ 701 0169 00400640 		.4byte	0x40064000
+ 702 016d 00       		.byte	0
+ 703 016e 07       		.uleb128 0x7
+ 704 016f 2E020000 		.4byte	.LVL42
+ 705 0173 23050000 		.4byte	0x523
+ 706 0177 85010000 		.4byte	0x185
+ 707 017b 08       		.uleb128 0x8
+ 708 017c 01       		.byte	0x1
+ 709 017d 50       		.byte	0x50
+ 710 017e 05       		.byte	0x5
+ 711 017f 0C       		.byte	0xc
+ 712 0180 00400640 		.4byte	0x40064000
+ 713 0184 00       		.byte	0
+ 714 0185 07       		.uleb128 0x7
+ 715 0186 48020000 		.4byte	.LVL43
+ 716 018a 23050000 		.4byte	0x523
+ 717 018e 9C010000 		.4byte	0x19c
+ 718 0192 08       		.uleb128 0x8
+ 719 0193 01       		.byte	0x1
+ 720 0194 50       		.byte	0x50
+ 721 0195 05       		.byte	0x5
+ 722 0196 0C       		.byte	0xc
+ 723 0197 00500240 		.4byte	0x40025000
+ 724 019b 00       		.byte	0
+ 725 019c 09       		.uleb128 0x9
+ 726 019d 62020000 		.4byte	.LVL44
+ 727 01a1 23050000 		.4byte	0x523
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 19
+
+
+ 728 01a5 08       		.uleb128 0x8
+ 729 01a6 01       		.byte	0x1
+ 730 01a7 50       		.byte	0x50
+ 731 01a8 05       		.byte	0x5
+ 732 01a9 0C       		.byte	0xc
+ 733 01aa 00500240 		.4byte	0x40025000
+ 734 01ae 00       		.byte	0
+ 735 01af 00       		.byte	0
+ 736 01b0 0B       		.uleb128 0xb
+ 737 01b1 01       		.byte	0x1
+ 738 01b2 43010000 		.4byte	.LASF16
+ 739 01b6 01       		.byte	0x1
+ 740 01b7 42       		.byte	0x42
+ 741 01b8 01       		.byte	0x1
+ 742 01b9 00000000 		.4byte	.LFB0
+ 743 01bd F4010000 		.4byte	.LFE0
+ 744 01c1 C4000000 		.4byte	.LLST0
+ 745 01c5 01       		.byte	0x1
+ 746 01c6 0F050000 		.4byte	0x50f
+ 747 01ca 0C       		.uleb128 0xc
+ 748 01cb 00000000 		.4byte	.LASF17
+ 749 01cf 01       		.byte	0x1
+ 750 01d0 42       		.byte	0x42
+ 751 01d1 0F050000 		.4byte	0x50f
+ 752 01d5 E4000000 		.4byte	.LLST1
+ 753 01d9 0C       		.uleb128 0xc
+ 754 01da 0A000000 		.4byte	.LASF18
+ 755 01de 01       		.byte	0x1
+ 756 01df 42       		.byte	0x42
+ 757 01e0 0F050000 		.4byte	0x50f
+ 758 01e4 05010000 		.4byte	.LLST2
+ 759 01e8 0D       		.uleb128 0xd
+ 760 01e9 10000000 		.4byte	.LVL2
+ 761 01ed FC010000 		.4byte	0x1fc
+ 762 01f1 08       		.uleb128 0x8
+ 763 01f2 01       		.byte	0x1
+ 764 01f3 50       		.byte	0x50
+ 765 01f4 06       		.byte	0x6
+ 766 01f5 11       		.byte	0x11
+ 767 01f6 80908080 		.sleb128 -268433408
+ 767      7F
+ 768 01fb 00       		.byte	0
+ 769 01fc 0D       		.uleb128 0xd
+ 770 01fd 18000000 		.4byte	.LVL3
+ 771 0201 10020000 		.4byte	0x210
+ 772 0205 08       		.uleb128 0x8
+ 773 0206 01       		.byte	0x1
+ 774 0207 50       		.byte	0x50
+ 775 0208 06       		.byte	0x6
+ 776 0209 11       		.byte	0x11
+ 777 020a 81908080 		.sleb128 -268433407
+ 777      7F
+ 778 020f 00       		.byte	0
+ 779 0210 0D       		.uleb128 0xd
+ 780 0211 20000000 		.4byte	.LVL4
+ 781 0215 24020000 		.4byte	0x224
+ 782 0219 08       		.uleb128 0x8
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 20
+
+
+ 783 021a 01       		.byte	0x1
+ 784 021b 50       		.byte	0x50
+ 785 021c 06       		.byte	0x6
+ 786 021d 11       		.byte	0x11
+ 787 021e 82908080 		.sleb128 -268433406
+ 787      7F
+ 788 0223 00       		.byte	0
+ 789 0224 0D       		.uleb128 0xd
+ 790 0225 28000000 		.4byte	.LVL5
+ 791 0229 38020000 		.4byte	0x238
+ 792 022d 08       		.uleb128 0x8
+ 793 022e 01       		.byte	0x1
+ 794 022f 50       		.byte	0x50
+ 795 0230 06       		.byte	0x6
+ 796 0231 11       		.byte	0x11
+ 797 0232 83908080 		.sleb128 -268433405
+ 797      7F
+ 798 0237 00       		.byte	0
+ 799 0238 0D       		.uleb128 0xd
+ 800 0239 30000000 		.4byte	.LVL6
+ 801 023d 4C020000 		.4byte	0x24c
+ 802 0241 08       		.uleb128 0x8
+ 803 0242 01       		.byte	0x1
+ 804 0243 50       		.byte	0x50
+ 805 0244 06       		.byte	0x6
+ 806 0245 11       		.byte	0x11
+ 807 0246 84908080 		.sleb128 -268433404
+ 807      7F
+ 808 024b 00       		.byte	0
+ 809 024c 0D       		.uleb128 0xd
+ 810 024d 38000000 		.4byte	.LVL7
+ 811 0251 60020000 		.4byte	0x260
+ 812 0255 08       		.uleb128 0x8
+ 813 0256 01       		.byte	0x1
+ 814 0257 50       		.byte	0x50
+ 815 0258 06       		.byte	0x6
+ 816 0259 11       		.byte	0x11
+ 817 025a 85908080 		.sleb128 -268433403
+ 817      7F
+ 818 025f 00       		.byte	0
+ 819 0260 0D       		.uleb128 0xd
+ 820 0261 40000000 		.4byte	.LVL8
+ 821 0265 74020000 		.4byte	0x274
+ 822 0269 08       		.uleb128 0x8
+ 823 026a 01       		.byte	0x1
+ 824 026b 50       		.byte	0x50
+ 825 026c 06       		.byte	0x6
+ 826 026d 11       		.byte	0x11
+ 827 026e 86908080 		.sleb128 -268433402
+ 827      7F
+ 828 0273 00       		.byte	0
+ 829 0274 0D       		.uleb128 0xd
+ 830 0275 48000000 		.4byte	.LVL9
+ 831 0279 88020000 		.4byte	0x288
+ 832 027d 08       		.uleb128 0x8
+ 833 027e 01       		.byte	0x1
+ 834 027f 50       		.byte	0x50
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 21
+
+
+ 835 0280 06       		.byte	0x6
+ 836 0281 11       		.byte	0x11
+ 837 0282 87908080 		.sleb128 -268433401
+ 837      7F
+ 838 0287 00       		.byte	0
+ 839 0288 0D       		.uleb128 0xd
+ 840 0289 50000000 		.4byte	.LVL10
+ 841 028d 9C020000 		.4byte	0x29c
+ 842 0291 08       		.uleb128 0x8
+ 843 0292 01       		.byte	0x1
+ 844 0293 50       		.byte	0x50
+ 845 0294 06       		.byte	0x6
+ 846 0295 11       		.byte	0x11
+ 847 0296 88908080 		.sleb128 -268433400
+ 847      7F
+ 848 029b 00       		.byte	0
+ 849 029c 0D       		.uleb128 0xd
+ 850 029d 58000000 		.4byte	.LVL11
+ 851 02a1 B0020000 		.4byte	0x2b0
+ 852 02a5 08       		.uleb128 0x8
+ 853 02a6 01       		.byte	0x1
+ 854 02a7 50       		.byte	0x50
+ 855 02a8 06       		.byte	0x6
+ 856 02a9 11       		.byte	0x11
+ 857 02aa 89908080 		.sleb128 -268433399
+ 857      7F
+ 858 02af 00       		.byte	0
+ 859 02b0 0D       		.uleb128 0xd
+ 860 02b1 60000000 		.4byte	.LVL12
+ 861 02b5 C4020000 		.4byte	0x2c4
+ 862 02b9 08       		.uleb128 0x8
+ 863 02ba 01       		.byte	0x1
+ 864 02bb 50       		.byte	0x50
+ 865 02bc 06       		.byte	0x6
+ 866 02bd 11       		.byte	0x11
+ 867 02be 8A908080 		.sleb128 -268433398
+ 867      7F
+ 868 02c3 00       		.byte	0
+ 869 02c4 0D       		.uleb128 0xd
+ 870 02c5 68000000 		.4byte	.LVL13
+ 871 02c9 D8020000 		.4byte	0x2d8
+ 872 02cd 08       		.uleb128 0x8
+ 873 02ce 01       		.byte	0x1
+ 874 02cf 50       		.byte	0x50
+ 875 02d0 06       		.byte	0x6
+ 876 02d1 11       		.byte	0x11
+ 877 02d2 8B908080 		.sleb128 -268433397
+ 877      7F
+ 878 02d7 00       		.byte	0
+ 879 02d8 0D       		.uleb128 0xd
+ 880 02d9 70000000 		.4byte	.LVL14
+ 881 02dd EC020000 		.4byte	0x2ec
+ 882 02e1 08       		.uleb128 0x8
+ 883 02e2 01       		.byte	0x1
+ 884 02e3 50       		.byte	0x50
+ 885 02e4 06       		.byte	0x6
+ 886 02e5 11       		.byte	0x11
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 22
+
+
+ 887 02e6 8C908080 		.sleb128 -268433396
+ 887      7F
+ 888 02eb 00       		.byte	0
+ 889 02ec 0D       		.uleb128 0xd
+ 890 02ed 78000000 		.4byte	.LVL15
+ 891 02f1 00030000 		.4byte	0x300
+ 892 02f5 08       		.uleb128 0x8
+ 893 02f6 01       		.byte	0x1
+ 894 02f7 50       		.byte	0x50
+ 895 02f8 06       		.byte	0x6
+ 896 02f9 11       		.byte	0x11
+ 897 02fa 8D908080 		.sleb128 -268433395
+ 897      7F
+ 898 02ff 00       		.byte	0
+ 899 0300 0D       		.uleb128 0xd
+ 900 0301 80000000 		.4byte	.LVL16
+ 901 0305 14030000 		.4byte	0x314
+ 902 0309 08       		.uleb128 0x8
+ 903 030a 01       		.byte	0x1
+ 904 030b 50       		.byte	0x50
+ 905 030c 06       		.byte	0x6
+ 906 030d 11       		.byte	0x11
+ 907 030e 8E908080 		.sleb128 -268433394
+ 907      7F
+ 908 0313 00       		.byte	0
+ 909 0314 0D       		.uleb128 0xd
+ 910 0315 8A000000 		.4byte	.LVL17
+ 911 0319 23030000 		.4byte	0x323
+ 912 031d 08       		.uleb128 0x8
+ 913 031e 01       		.byte	0x1
+ 914 031f 50       		.byte	0x50
+ 915 0320 01       		.byte	0x1
+ 916 0321 31       		.byte	0x31
+ 917 0322 00       		.byte	0
+ 918 0323 0D       		.uleb128 0xd
+ 919 0324 94000000 		.4byte	.LVL18
+ 920 0328 34030000 		.4byte	0x334
+ 921 032c 08       		.uleb128 0x8
+ 922 032d 01       		.byte	0x1
+ 923 032e 50       		.byte	0x50
+ 924 032f 03       		.byte	0x3
+ 925 0330 0A       		.byte	0xa
+ 926 0331 0104     		.2byte	0x401
+ 927 0333 00       		.byte	0
+ 928 0334 0D       		.uleb128 0xd
+ 929 0335 A0000000 		.4byte	.LVL19
+ 930 0339 4C030000 		.4byte	0x34c
+ 931 033d 08       		.uleb128 0x8
+ 932 033e 01       		.byte	0x1
+ 933 033f 50       		.byte	0x50
+ 934 0340 05       		.byte	0x5
+ 935 0341 0C       		.byte	0xc
+ 936 0342 00400040 		.4byte	0x40004000
+ 937 0346 08       		.uleb128 0x8
+ 938 0347 01       		.byte	0x1
+ 939 0348 51       		.byte	0x51
+ 940 0349 01       		.byte	0x1
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 23
+
+
+ 941 034a 33       		.byte	0x33
+ 942 034b 00       		.byte	0
+ 943 034c 0D       		.uleb128 0xd
+ 944 034d B8000000 		.4byte	.LVL20
+ 945 0351 5F030000 		.4byte	0x35f
+ 946 0355 08       		.uleb128 0x8
+ 947 0356 01       		.byte	0x1
+ 948 0357 50       		.byte	0x50
+ 949 0358 05       		.byte	0x5
+ 950 0359 0C       		.byte	0xc
+ 951 035a 05180300 		.4byte	0x31805
+ 952 035e 00       		.byte	0
+ 953 035f 0D       		.uleb128 0xd
+ 954 0360 C2000000 		.4byte	.LVL21
+ 955 0364 77030000 		.4byte	0x377
+ 956 0368 08       		.uleb128 0x8
+ 957 0369 01       		.byte	0x1
+ 958 036a 50       		.byte	0x50
+ 959 036b 05       		.byte	0x5
+ 960 036c 0C       		.byte	0xc
+ 961 036d 00500040 		.4byte	0x40005000
+ 962 0371 08       		.uleb128 0x8
+ 963 0372 01       		.byte	0x1
+ 964 0373 51       		.byte	0x51
+ 965 0374 01       		.byte	0x1
+ 966 0375 33       		.byte	0x33
+ 967 0376 00       		.byte	0
+ 968 0377 0D       		.uleb128 0xd
+ 969 0378 CC000000 		.4byte	.LVL22
+ 970 037c 90030000 		.4byte	0x390
+ 971 0380 08       		.uleb128 0x8
+ 972 0381 01       		.byte	0x1
+ 973 0382 50       		.byte	0x50
+ 974 0383 05       		.byte	0x5
+ 975 0384 0C       		.byte	0xc
+ 976 0385 00700040 		.4byte	0x40007000
+ 977 0389 08       		.uleb128 0x8
+ 978 038a 01       		.byte	0x1
+ 979 038b 51       		.byte	0x51
+ 980 038c 02       		.byte	0x2
+ 981 038d 08       		.byte	0x8
+ 982 038e 40       		.byte	0x40
+ 983 038f 00       		.byte	0
+ 984 0390 0D       		.uleb128 0xd
+ 985 0391 D6000000 		.4byte	.LVL23
+ 986 0395 A9030000 		.4byte	0x3a9
+ 987 0399 08       		.uleb128 0x8
+ 988 039a 01       		.byte	0x1
+ 989 039b 50       		.byte	0x50
+ 990 039c 05       		.byte	0x5
+ 991 039d 0C       		.byte	0xc
+ 992 039e 00200640 		.4byte	0x40062000
+ 993 03a2 08       		.uleb128 0x8
+ 994 03a3 01       		.byte	0x1
+ 995 03a4 51       		.byte	0x51
+ 996 03a5 02       		.byte	0x2
+ 997 03a6 09       		.byte	0x9
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 24
+
+
+ 998 03a7 C0       		.byte	0xc0
+ 999 03a8 00       		.byte	0
+ 1000 03a9 0D       		.uleb128 0xd
+ 1001 03aa E0000000 		.4byte	.LVL24
+ 1002 03ae C1030000 		.4byte	0x3c1
+ 1003 03b2 08       		.uleb128 0x8
+ 1004 03b3 01       		.byte	0x1
+ 1005 03b4 50       		.byte	0x50
+ 1006 03b5 05       		.byte	0x5
+ 1007 03b6 0C       		.byte	0xc
+ 1008 03b7 00600640 		.4byte	0x40066000
+ 1009 03bb 08       		.uleb128 0x8
+ 1010 03bc 01       		.byte	0x1
+ 1011 03bd 51       		.byte	0x51
+ 1012 03be 01       		.byte	0x1
+ 1013 03bf 40       		.byte	0x40
+ 1014 03c0 00       		.byte	0
+ 1015 03c1 0D       		.uleb128 0xd
+ 1016 03c2 F2000000 		.4byte	.LVL25
+ 1017 03c6 D6030000 		.4byte	0x3d6
+ 1018 03ca 08       		.uleb128 0x8
+ 1019 03cb 01       		.byte	0x1
+ 1020 03cc 50       		.byte	0x50
+ 1021 03cd 02       		.byte	0x2
+ 1022 03ce 74       		.byte	0x74
+ 1023 03cf 00       		.sleb128 0
+ 1024 03d0 08       		.uleb128 0x8
+ 1025 03d1 01       		.byte	0x1
+ 1026 03d2 51       		.byte	0x51
+ 1027 03d3 01       		.byte	0x1
+ 1028 03d4 41       		.byte	0x41
+ 1029 03d5 00       		.byte	0
+ 1030 03d6 0D       		.uleb128 0xd
+ 1031 03d7 FE000000 		.4byte	.LVL26
+ 1032 03db F0030000 		.4byte	0x3f0
+ 1033 03df 08       		.uleb128 0x8
+ 1034 03e0 01       		.byte	0x1
+ 1035 03e1 50       		.byte	0x50
+ 1036 03e2 02       		.byte	0x2
+ 1037 03e3 74       		.byte	0x74
+ 1038 03e4 00       		.sleb128 0
+ 1039 03e5 08       		.uleb128 0x8
+ 1040 03e6 01       		.byte	0x1
+ 1041 03e7 51       		.byte	0x51
+ 1042 03e8 01       		.byte	0x1
+ 1043 03e9 41       		.byte	0x41
+ 1044 03ea 08       		.uleb128 0x8
+ 1045 03eb 01       		.byte	0x1
+ 1046 03ec 52       		.byte	0x52
+ 1047 03ed 01       		.byte	0x1
+ 1048 03ee 30       		.byte	0x30
+ 1049 03ef 00       		.byte	0
+ 1050 03f0 07       		.uleb128 0x7
+ 1051 03f1 0A010000 		.4byte	.LVL27
+ 1052 03f5 30050000 		.4byte	0x530
+ 1053 03f9 14040000 		.4byte	0x414
+ 1054 03fd 08       		.uleb128 0x8
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 25
+
+
+ 1055 03fe 01       		.byte	0x1
+ 1056 03ff 50       		.byte	0x50
+ 1057 0400 02       		.byte	0x2
+ 1058 0401 74       		.byte	0x74
+ 1059 0402 00       		.sleb128 0
+ 1060 0403 08       		.uleb128 0x8
+ 1061 0404 01       		.byte	0x1
+ 1062 0405 51       		.byte	0x51
+ 1063 0406 01       		.byte	0x1
+ 1064 0407 41       		.byte	0x41
+ 1065 0408 08       		.uleb128 0x8
+ 1066 0409 01       		.byte	0x1
+ 1067 040a 52       		.byte	0x52
+ 1068 040b 02       		.byte	0x2
+ 1069 040c 08       		.byte	0x8
+ 1070 040d 77       		.byte	0x77
+ 1071 040e 08       		.uleb128 0x8
+ 1072 040f 01       		.byte	0x1
+ 1073 0410 53       		.byte	0x53
+ 1074 0411 01       		.byte	0x1
+ 1075 0412 38       		.byte	0x38
+ 1076 0413 00       		.byte	0
+ 1077 0414 0D       		.uleb128 0xd
+ 1078 0415 18010000 		.4byte	.LVL28
+ 1079 0419 29040000 		.4byte	0x429
+ 1080 041d 08       		.uleb128 0x8
+ 1081 041e 01       		.byte	0x1
+ 1082 041f 50       		.byte	0x50
+ 1083 0420 02       		.byte	0x2
+ 1084 0421 75       		.byte	0x75
+ 1085 0422 00       		.sleb128 0
+ 1086 0423 08       		.uleb128 0x8
+ 1087 0424 01       		.byte	0x1
+ 1088 0425 51       		.byte	0x51
+ 1089 0426 01       		.byte	0x1
+ 1090 0427 33       		.byte	0x33
+ 1091 0428 00       		.byte	0
+ 1092 0429 0D       		.uleb128 0xd
+ 1093 042a 24010000 		.4byte	.LVL29
+ 1094 042e 43040000 		.4byte	0x443
+ 1095 0432 08       		.uleb128 0x8
+ 1096 0433 01       		.byte	0x1
+ 1097 0434 50       		.byte	0x50
+ 1098 0435 02       		.byte	0x2
+ 1099 0436 75       		.byte	0x75
+ 1100 0437 00       		.sleb128 0
+ 1101 0438 08       		.uleb128 0x8
+ 1102 0439 01       		.byte	0x1
+ 1103 043a 51       		.byte	0x51
+ 1104 043b 01       		.byte	0x1
+ 1105 043c 33       		.byte	0x33
+ 1106 043d 08       		.uleb128 0x8
+ 1107 043e 01       		.byte	0x1
+ 1108 043f 52       		.byte	0x52
+ 1109 0440 01       		.byte	0x1
+ 1110 0441 30       		.byte	0x30
+ 1111 0442 00       		.byte	0
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 26
+
+
+ 1112 0443 0D       		.uleb128 0xd
+ 1113 0444 32010000 		.4byte	.LVL30
+ 1114 0448 58040000 		.4byte	0x458
+ 1115 044c 08       		.uleb128 0x8
+ 1116 044d 01       		.byte	0x1
+ 1117 044e 50       		.byte	0x50
+ 1118 044f 02       		.byte	0x2
+ 1119 0450 75       		.byte	0x75
+ 1120 0451 00       		.sleb128 0
+ 1121 0452 08       		.uleb128 0x8
+ 1122 0453 01       		.byte	0x1
+ 1123 0454 51       		.byte	0x51
+ 1124 0455 01       		.byte	0x1
+ 1125 0456 33       		.byte	0x33
+ 1126 0457 00       		.byte	0
+ 1127 0458 07       		.uleb128 0x7
+ 1128 0459 3E010000 		.4byte	.LVL31
+ 1129 045d 30050000 		.4byte	0x530
+ 1130 0461 7C040000 		.4byte	0x47c
+ 1131 0465 08       		.uleb128 0x8
+ 1132 0466 01       		.byte	0x1
+ 1133 0467 50       		.byte	0x50
+ 1134 0468 02       		.byte	0x2
+ 1135 0469 75       		.byte	0x75
+ 1136 046a 00       		.sleb128 0
+ 1137 046b 08       		.uleb128 0x8
+ 1138 046c 01       		.byte	0x1
+ 1139 046d 51       		.byte	0x51
+ 1140 046e 01       		.byte	0x1
+ 1141 046f 33       		.byte	0x33
+ 1142 0470 08       		.uleb128 0x8
+ 1143 0471 01       		.byte	0x1
+ 1144 0472 52       		.byte	0x52
+ 1145 0473 02       		.byte	0x2
+ 1146 0474 08       		.byte	0x8
+ 1147 0475 77       		.byte	0x77
+ 1148 0476 08       		.uleb128 0x8
+ 1149 0477 01       		.byte	0x1
+ 1150 0478 53       		.byte	0x53
+ 1151 0479 01       		.byte	0x1
+ 1152 047a 38       		.byte	0x38
+ 1153 047b 00       		.byte	0
+ 1154 047c 0D       		.uleb128 0xd
+ 1155 047d 4A010000 		.4byte	.LVL32
+ 1156 0481 96040000 		.4byte	0x496
+ 1157 0485 08       		.uleb128 0x8
+ 1158 0486 01       		.byte	0x1
+ 1159 0487 50       		.byte	0x50
+ 1160 0488 02       		.byte	0x2
+ 1161 0489 75       		.byte	0x75
+ 1162 048a 00       		.sleb128 0
+ 1163 048b 08       		.uleb128 0x8
+ 1164 048c 01       		.byte	0x1
+ 1165 048d 51       		.byte	0x51
+ 1166 048e 01       		.byte	0x1
+ 1167 048f 33       		.byte	0x33
+ 1168 0490 08       		.uleb128 0x8
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 27
+
+
+ 1169 0491 01       		.byte	0x1
+ 1170 0492 52       		.byte	0x52
+ 1171 0493 01       		.byte	0x1
+ 1172 0494 30       		.byte	0x30
+ 1173 0495 00       		.byte	0
+ 1174 0496 0D       		.uleb128 0xd
+ 1175 0497 5A010000 		.4byte	.LVL33
+ 1176 049b AC040000 		.4byte	0x4ac
+ 1177 049f 08       		.uleb128 0x8
+ 1178 04a0 01       		.byte	0x1
+ 1179 04a1 50       		.byte	0x50
+ 1180 04a2 02       		.byte	0x2
+ 1181 04a3 74       		.byte	0x74
+ 1182 04a4 00       		.sleb128 0
+ 1183 04a5 08       		.uleb128 0x8
+ 1184 04a6 01       		.byte	0x1
+ 1185 04a7 51       		.byte	0x51
+ 1186 04a8 02       		.byte	0x2
+ 1187 04a9 08       		.byte	0x8
+ 1188 04aa 40       		.byte	0x40
+ 1189 04ab 00       		.byte	0
+ 1190 04ac 07       		.uleb128 0x7
+ 1191 04ad 66010000 		.4byte	.LVL34
+ 1192 04b1 30050000 		.4byte	0x530
+ 1193 04b5 D0040000 		.4byte	0x4d0
+ 1194 04b9 08       		.uleb128 0x8
+ 1195 04ba 01       		.byte	0x1
+ 1196 04bb 50       		.byte	0x50
+ 1197 04bc 02       		.byte	0x2
+ 1198 04bd 74       		.byte	0x74
+ 1199 04be 00       		.sleb128 0
+ 1200 04bf 08       		.uleb128 0x8
+ 1201 04c0 01       		.byte	0x1
+ 1202 04c1 51       		.byte	0x51
+ 1203 04c2 02       		.byte	0x2
+ 1204 04c3 08       		.byte	0x8
+ 1205 04c4 40       		.byte	0x40
+ 1206 04c5 08       		.uleb128 0x8
+ 1207 04c6 01       		.byte	0x1
+ 1208 04c7 52       		.byte	0x52
+ 1209 04c8 01       		.byte	0x1
+ 1210 04c9 31       		.byte	0x31
+ 1211 04ca 08       		.uleb128 0x8
+ 1212 04cb 01       		.byte	0x1
+ 1213 04cc 53       		.byte	0x53
+ 1214 04cd 01       		.byte	0x1
+ 1215 04ce 3C       		.byte	0x3c
+ 1216 04cf 00       		.byte	0
+ 1217 04d0 0D       		.uleb128 0xd
+ 1218 04d1 74010000 		.4byte	.LVL35
+ 1219 04d5 E3040000 		.4byte	0x4e3
+ 1220 04d9 08       		.uleb128 0x8
+ 1221 04da 01       		.byte	0x1
+ 1222 04db 50       		.byte	0x50
+ 1223 04dc 05       		.byte	0x5
+ 1224 04dd 0C       		.byte	0xc
+ 1225 04de 05000500 		.4byte	0x50005
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 28
+
+
+ 1226 04e2 00       		.byte	0
+ 1227 04e3 0D       		.uleb128 0xd
+ 1228 04e4 7C010000 		.4byte	.LVL36
+ 1229 04e8 F6040000 		.4byte	0x4f6
+ 1230 04ec 08       		.uleb128 0x8
+ 1231 04ed 01       		.byte	0x1
+ 1232 04ee 50       		.byte	0x50
+ 1233 04ef 05       		.byte	0x5
+ 1234 04f0 0C       		.byte	0xc
+ 1235 04f1 05100500 		.4byte	0x51005
+ 1236 04f5 00       		.byte	0
+ 1237 04f6 09       		.uleb128 0x9
+ 1238 04f7 84010000 		.4byte	.LVL37
+ 1239 04fb 3D050000 		.4byte	0x53d
+ 1240 04ff 08       		.uleb128 0x8
+ 1241 0500 01       		.byte	0x1
+ 1242 0501 50       		.byte	0x50
+ 1243 0502 05       		.byte	0x5
+ 1244 0503 0C       		.byte	0xc
+ 1245 0504 00500240 		.4byte	0x40025000
+ 1246 0508 08       		.uleb128 0x8
+ 1247 0509 01       		.byte	0x1
+ 1248 050a 51       		.byte	0x51
+ 1249 050b 01       		.byte	0x1
+ 1250 050c 41       		.byte	0x41
+ 1251 050d 00       		.byte	0
+ 1252 050e 00       		.byte	0
+ 1253 050f 02       		.uleb128 0x2
+ 1254 0510 01       		.byte	0x1
+ 1255 0511 02       		.byte	0x2
+ 1256 0512 FC010000 		.4byte	.LASF19
+ 1257 0516 0E       		.uleb128 0xe
+ 1258 0517 01       		.byte	0x1
+ 1259 0518 01       		.byte	0x1
+ 1260 0519 0F000000 		.4byte	.LASF20
+ 1261 051d 0F000000 		.4byte	.LASF20
+ 1262 0521 04       		.byte	0x4
+ 1263 0522 9D       		.byte	0x9d
+ 1264 0523 0E       		.uleb128 0xe
+ 1265 0524 01       		.byte	0x1
+ 1266 0525 01       		.byte	0x1
+ 1267 0526 24000000 		.4byte	.LASF21
+ 1268 052a 24000000 		.4byte	.LASF21
+ 1269 052e 04       		.byte	0x4
+ 1270 052f 9E       		.byte	0x9e
+ 1271 0530 0E       		.uleb128 0xe
+ 1272 0531 01       		.byte	0x1
+ 1273 0532 01       		.byte	0x1
+ 1274 0533 09010000 		.4byte	.LASF22
+ 1275 0537 09010000 		.4byte	.LASF22
+ 1276 053b 04       		.byte	0x4
+ 1277 053c 93       		.byte	0x93
+ 1278 053d 0E       		.uleb128 0xe
+ 1279 053e 01       		.byte	0x1
+ 1280 053f 01       		.byte	0x1
+ 1281 0540 1A010000 		.4byte	.LASF23
+ 1282 0544 1A010000 		.4byte	.LASF23
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 29
+
+
+ 1283 0548 04       		.byte	0x4
+ 1284 0549 A4       		.byte	0xa4
+ 1285 054a 00       		.byte	0
+ 1286              		.section	.debug_abbrev,"",%progbits
+ 1287              	.Ldebug_abbrev0:
+ 1288 0000 01       		.uleb128 0x1
+ 1289 0001 11       		.uleb128 0x11
+ 1290 0002 01       		.byte	0x1
+ 1291 0003 25       		.uleb128 0x25
+ 1292 0004 0E       		.uleb128 0xe
+ 1293 0005 13       		.uleb128 0x13
+ 1294 0006 0B       		.uleb128 0xb
+ 1295 0007 03       		.uleb128 0x3
+ 1296 0008 0E       		.uleb128 0xe
+ 1297 0009 1B       		.uleb128 0x1b
+ 1298 000a 0E       		.uleb128 0xe
+ 1299 000b 11       		.uleb128 0x11
+ 1300 000c 01       		.uleb128 0x1
+ 1301 000d 12       		.uleb128 0x12
+ 1302 000e 01       		.uleb128 0x1
+ 1303 000f 10       		.uleb128 0x10
+ 1304 0010 06       		.uleb128 0x6
+ 1305 0011 00       		.byte	0
+ 1306 0012 00       		.byte	0
+ 1307 0013 02       		.uleb128 0x2
+ 1308 0014 24       		.uleb128 0x24
+ 1309 0015 00       		.byte	0
+ 1310 0016 0B       		.uleb128 0xb
+ 1311 0017 0B       		.uleb128 0xb
+ 1312 0018 3E       		.uleb128 0x3e
+ 1313 0019 0B       		.uleb128 0xb
+ 1314 001a 03       		.uleb128 0x3
+ 1315 001b 0E       		.uleb128 0xe
+ 1316 001c 00       		.byte	0
+ 1317 001d 00       		.byte	0
+ 1318 001e 03       		.uleb128 0x3
+ 1319 001f 16       		.uleb128 0x16
+ 1320 0020 00       		.byte	0
+ 1321 0021 03       		.uleb128 0x3
+ 1322 0022 0E       		.uleb128 0xe
+ 1323 0023 3A       		.uleb128 0x3a
+ 1324 0024 0B       		.uleb128 0xb
+ 1325 0025 3B       		.uleb128 0x3b
+ 1326 0026 0B       		.uleb128 0xb
+ 1327 0027 49       		.uleb128 0x49
+ 1328 0028 13       		.uleb128 0x13
+ 1329 0029 00       		.byte	0
+ 1330 002a 00       		.byte	0
+ 1331 002b 04       		.uleb128 0x4
+ 1332 002c 24       		.uleb128 0x24
+ 1333 002d 00       		.byte	0
+ 1334 002e 0B       		.uleb128 0xb
+ 1335 002f 0B       		.uleb128 0xb
+ 1336 0030 3E       		.uleb128 0x3e
+ 1337 0031 0B       		.uleb128 0xb
+ 1338 0032 03       		.uleb128 0x3
+ 1339 0033 08       		.uleb128 0x8
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 30
+
+
+ 1340 0034 00       		.byte	0
+ 1341 0035 00       		.byte	0
+ 1342 0036 05       		.uleb128 0x5
+ 1343 0037 2E       		.uleb128 0x2e
+ 1344 0038 01       		.byte	0x1
+ 1345 0039 3F       		.uleb128 0x3f
+ 1346 003a 0C       		.uleb128 0xc
+ 1347 003b 03       		.uleb128 0x3
+ 1348 003c 0E       		.uleb128 0xe
+ 1349 003d 3A       		.uleb128 0x3a
+ 1350 003e 0B       		.uleb128 0xb
+ 1351 003f 3B       		.uleb128 0x3b
+ 1352 0040 05       		.uleb128 0x5
+ 1353 0041 27       		.uleb128 0x27
+ 1354 0042 0C       		.uleb128 0xc
+ 1355 0043 11       		.uleb128 0x11
+ 1356 0044 01       		.uleb128 0x1
+ 1357 0045 12       		.uleb128 0x12
+ 1358 0046 01       		.uleb128 0x1
+ 1359 0047 40       		.uleb128 0x40
+ 1360 0048 06       		.uleb128 0x6
+ 1361 0049 9742     		.uleb128 0x2117
+ 1362 004b 0C       		.uleb128 0xc
+ 1363 004c 01       		.uleb128 0x1
+ 1364 004d 13       		.uleb128 0x13
+ 1365 004e 00       		.byte	0
+ 1366 004f 00       		.byte	0
+ 1367 0050 06       		.uleb128 0x6
+ 1368 0051 05       		.uleb128 0x5
+ 1369 0052 00       		.byte	0
+ 1370 0053 03       		.uleb128 0x3
+ 1371 0054 0E       		.uleb128 0xe
+ 1372 0055 3A       		.uleb128 0x3a
+ 1373 0056 0B       		.uleb128 0xb
+ 1374 0057 3B       		.uleb128 0x3b
+ 1375 0058 05       		.uleb128 0x5
+ 1376 0059 49       		.uleb128 0x49
+ 1377 005a 13       		.uleb128 0x13
+ 1378 005b 02       		.uleb128 0x2
+ 1379 005c 06       		.uleb128 0x6
+ 1380 005d 00       		.byte	0
+ 1381 005e 00       		.byte	0
+ 1382 005f 07       		.uleb128 0x7
+ 1383 0060 898201   		.uleb128 0x4109
+ 1384 0063 01       		.byte	0x1
+ 1385 0064 11       		.uleb128 0x11
+ 1386 0065 01       		.uleb128 0x1
+ 1387 0066 31       		.uleb128 0x31
+ 1388 0067 13       		.uleb128 0x13
+ 1389 0068 01       		.uleb128 0x1
+ 1390 0069 13       		.uleb128 0x13
+ 1391 006a 00       		.byte	0
+ 1392 006b 00       		.byte	0
+ 1393 006c 08       		.uleb128 0x8
+ 1394 006d 8A8201   		.uleb128 0x410a
+ 1395 0070 00       		.byte	0
+ 1396 0071 02       		.uleb128 0x2
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 31
+
+
+ 1397 0072 0A       		.uleb128 0xa
+ 1398 0073 9142     		.uleb128 0x2111
+ 1399 0075 0A       		.uleb128 0xa
+ 1400 0076 00       		.byte	0
+ 1401 0077 00       		.byte	0
+ 1402 0078 09       		.uleb128 0x9
+ 1403 0079 898201   		.uleb128 0x4109
+ 1404 007c 01       		.byte	0x1
+ 1405 007d 11       		.uleb128 0x11
+ 1406 007e 01       		.uleb128 0x1
+ 1407 007f 31       		.uleb128 0x31
+ 1408 0080 13       		.uleb128 0x13
+ 1409 0081 00       		.byte	0
+ 1410 0082 00       		.byte	0
+ 1411 0083 0A       		.uleb128 0xa
+ 1412 0084 0F       		.uleb128 0xf
+ 1413 0085 00       		.byte	0
+ 1414 0086 0B       		.uleb128 0xb
+ 1415 0087 0B       		.uleb128 0xb
+ 1416 0088 49       		.uleb128 0x49
+ 1417 0089 13       		.uleb128 0x13
+ 1418 008a 00       		.byte	0
+ 1419 008b 00       		.byte	0
+ 1420 008c 0B       		.uleb128 0xb
+ 1421 008d 2E       		.uleb128 0x2e
+ 1422 008e 01       		.byte	0x1
+ 1423 008f 3F       		.uleb128 0x3f
+ 1424 0090 0C       		.uleb128 0xc
+ 1425 0091 03       		.uleb128 0x3
+ 1426 0092 0E       		.uleb128 0xe
+ 1427 0093 3A       		.uleb128 0x3a
+ 1428 0094 0B       		.uleb128 0xb
+ 1429 0095 3B       		.uleb128 0x3b
+ 1430 0096 0B       		.uleb128 0xb
+ 1431 0097 27       		.uleb128 0x27
+ 1432 0098 0C       		.uleb128 0xc
+ 1433 0099 11       		.uleb128 0x11
+ 1434 009a 01       		.uleb128 0x1
+ 1435 009b 12       		.uleb128 0x12
+ 1436 009c 01       		.uleb128 0x1
+ 1437 009d 40       		.uleb128 0x40
+ 1438 009e 06       		.uleb128 0x6
+ 1439 009f 9742     		.uleb128 0x2117
+ 1440 00a1 0C       		.uleb128 0xc
+ 1441 00a2 01       		.uleb128 0x1
+ 1442 00a3 13       		.uleb128 0x13
+ 1443 00a4 00       		.byte	0
+ 1444 00a5 00       		.byte	0
+ 1445 00a6 0C       		.uleb128 0xc
+ 1446 00a7 05       		.uleb128 0x5
+ 1447 00a8 00       		.byte	0
+ 1448 00a9 03       		.uleb128 0x3
+ 1449 00aa 0E       		.uleb128 0xe
+ 1450 00ab 3A       		.uleb128 0x3a
+ 1451 00ac 0B       		.uleb128 0xb
+ 1452 00ad 3B       		.uleb128 0x3b
+ 1453 00ae 0B       		.uleb128 0xb
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 32
+
+
+ 1454 00af 49       		.uleb128 0x49
+ 1455 00b0 13       		.uleb128 0x13
+ 1456 00b1 02       		.uleb128 0x2
+ 1457 00b2 06       		.uleb128 0x6
+ 1458 00b3 00       		.byte	0
+ 1459 00b4 00       		.byte	0
+ 1460 00b5 0D       		.uleb128 0xd
+ 1461 00b6 898201   		.uleb128 0x4109
+ 1462 00b9 01       		.byte	0x1
+ 1463 00ba 11       		.uleb128 0x11
+ 1464 00bb 01       		.uleb128 0x1
+ 1465 00bc 01       		.uleb128 0x1
+ 1466 00bd 13       		.uleb128 0x13
+ 1467 00be 00       		.byte	0
+ 1468 00bf 00       		.byte	0
+ 1469 00c0 0E       		.uleb128 0xe
+ 1470 00c1 2E       		.uleb128 0x2e
+ 1471 00c2 00       		.byte	0
+ 1472 00c3 3F       		.uleb128 0x3f
+ 1473 00c4 0C       		.uleb128 0xc
+ 1474 00c5 3C       		.uleb128 0x3c
+ 1475 00c6 0C       		.uleb128 0xc
+ 1476 00c7 8740     		.uleb128 0x2007
+ 1477 00c9 0E       		.uleb128 0xe
+ 1478 00ca 03       		.uleb128 0x3
+ 1479 00cb 0E       		.uleb128 0xe
+ 1480 00cc 3A       		.uleb128 0x3a
+ 1481 00cd 0B       		.uleb128 0xb
+ 1482 00ce 3B       		.uleb128 0x3b
+ 1483 00cf 0B       		.uleb128 0xb
+ 1484 00d0 00       		.byte	0
+ 1485 00d1 00       		.byte	0
+ 1486 00d2 00       		.byte	0
+ 1487              		.section	.debug_loc,"",%progbits
+ 1488              	.Ldebug_loc0:
+ 1489              	.LLST6:
+ 1490 0000 6C020000 		.4byte	.LFB2-.Ltext0
+ 1491 0004 6E020000 		.4byte	.LCFI2-.Ltext0
+ 1492 0008 0200     		.2byte	0x2
+ 1493 000a 7D       		.byte	0x7d
+ 1494 000b 00       		.sleb128 0
+ 1495 000c 6E020000 		.4byte	.LCFI2-.Ltext0
+ 1496 0010 C8020000 		.4byte	.LFE2-.Ltext0
+ 1497 0014 0200     		.2byte	0x2
+ 1498 0016 7D       		.byte	0x7d
+ 1499 0017 08       		.sleb128 8
+ 1500 0018 00000000 		.4byte	0
+ 1501 001c 00000000 		.4byte	0
+ 1502              	.LLST7:
+ 1503 0020 6C020000 		.4byte	.LVL46-.Ltext0
+ 1504 0024 78020000 		.4byte	.LVL47-.Ltext0
+ 1505 0028 0100     		.2byte	0x1
+ 1506 002a 50       		.byte	0x50
+ 1507 002b 78020000 		.4byte	.LVL47-.Ltext0
+ 1508 002f BE020000 		.4byte	.LVL52-.Ltext0
+ 1509 0033 0100     		.2byte	0x1
+ 1510 0035 54       		.byte	0x54
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 33
+
+
+ 1511 0036 BE020000 		.4byte	.LVL52-.Ltext0
+ 1512 003a C8020000 		.4byte	.LFE2-.Ltext0
+ 1513 003e 0400     		.2byte	0x4
+ 1514 0040 F3       		.byte	0xf3
+ 1515 0041 01       		.uleb128 0x1
+ 1516 0042 50       		.byte	0x50
+ 1517 0043 9F       		.byte	0x9f
+ 1518 0044 00000000 		.4byte	0
+ 1519 0048 00000000 		.4byte	0
+ 1520              	.LLST3:
+ 1521 004c F4010000 		.4byte	.LFB1-.Ltext0
+ 1522 0050 F6010000 		.4byte	.LCFI1-.Ltext0
+ 1523 0054 0200     		.2byte	0x2
+ 1524 0056 7D       		.byte	0x7d
+ 1525 0057 00       		.sleb128 0
+ 1526 0058 F6010000 		.4byte	.LCFI1-.Ltext0
+ 1527 005c 6C020000 		.4byte	.LFE1-.Ltext0
+ 1528 0060 0200     		.2byte	0x2
+ 1529 0062 7D       		.byte	0x7d
+ 1530 0063 10       		.sleb128 16
+ 1531 0064 00000000 		.4byte	0
+ 1532 0068 00000000 		.4byte	0
+ 1533              	.LLST4:
+ 1534 006c F4010000 		.4byte	.LVL38-.Ltext0
+ 1535 0070 10020000 		.4byte	.LVL40-.Ltext0
+ 1536 0074 0100     		.2byte	0x1
+ 1537 0076 50       		.byte	0x50
+ 1538 0077 10020000 		.4byte	.LVL40-.Ltext0
+ 1539 007b 64020000 		.4byte	.LVL45-.Ltext0
+ 1540 007f 0100     		.2byte	0x1
+ 1541 0081 54       		.byte	0x54
+ 1542 0082 64020000 		.4byte	.LVL45-.Ltext0
+ 1543 0086 6C020000 		.4byte	.LFE1-.Ltext0
+ 1544 008a 0400     		.2byte	0x4
+ 1545 008c F3       		.byte	0xf3
+ 1546 008d 01       		.uleb128 0x1
+ 1547 008e 50       		.byte	0x50
+ 1548 008f 9F       		.byte	0x9f
+ 1549 0090 00000000 		.4byte	0
+ 1550 0094 00000000 		.4byte	0
+ 1551              	.LLST5:
+ 1552 0098 F4010000 		.4byte	.LVL38-.Ltext0
+ 1553 009c 0A020000 		.4byte	.LVL39-.Ltext0
+ 1554 00a0 0100     		.2byte	0x1
+ 1555 00a2 51       		.byte	0x51
+ 1556 00a3 0A020000 		.4byte	.LVL39-.Ltext0
+ 1557 00a7 64020000 		.4byte	.LVL45-.Ltext0
+ 1558 00ab 0100     		.2byte	0x1
+ 1559 00ad 55       		.byte	0x55
+ 1560 00ae 64020000 		.4byte	.LVL45-.Ltext0
+ 1561 00b2 6C020000 		.4byte	.LFE1-.Ltext0
+ 1562 00b6 0400     		.2byte	0x4
+ 1563 00b8 F3       		.byte	0xf3
+ 1564 00b9 01       		.uleb128 0x1
+ 1565 00ba 51       		.byte	0x51
+ 1566 00bb 9F       		.byte	0x9f
+ 1567 00bc 00000000 		.4byte	0
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 34
+
+
+ 1568 00c0 00000000 		.4byte	0
+ 1569              	.LLST0:
+ 1570 00c4 00000000 		.4byte	.LFB0-.Ltext0
+ 1571 00c8 02000000 		.4byte	.LCFI0-.Ltext0
+ 1572 00cc 0200     		.2byte	0x2
+ 1573 00ce 7D       		.byte	0x7d
+ 1574 00cf 00       		.sleb128 0
+ 1575 00d0 02000000 		.4byte	.LCFI0-.Ltext0
+ 1576 00d4 F4010000 		.4byte	.LFE0-.Ltext0
+ 1577 00d8 0200     		.2byte	0x2
+ 1578 00da 7D       		.byte	0x7d
+ 1579 00db 10       		.sleb128 16
+ 1580 00dc 00000000 		.4byte	0
+ 1581 00e0 00000000 		.4byte	0
+ 1582              	.LLST1:
+ 1583 00e4 00000000 		.4byte	.LVL0-.Ltext0
+ 1584 00e8 0E000000 		.4byte	.LVL1-.Ltext0
+ 1585 00ec 0100     		.2byte	0x1
+ 1586 00ee 50       		.byte	0x50
+ 1587 00ef 0E000000 		.4byte	.LVL1-.Ltext0
+ 1588 00f3 F4010000 		.4byte	.LFE0-.Ltext0
+ 1589 00f7 0400     		.2byte	0x4
+ 1590 00f9 F3       		.byte	0xf3
+ 1591 00fa 01       		.uleb128 0x1
+ 1592 00fb 50       		.byte	0x50
+ 1593 00fc 9F       		.byte	0x9f
+ 1594 00fd 00000000 		.4byte	0
+ 1595 0101 00000000 		.4byte	0
+ 1596              	.LLST2:
+ 1597 0105 00000000 		.4byte	.LVL0-.Ltext0
+ 1598 0109 0F000000 		.4byte	.LVL2-1-.Ltext0
+ 1599 010d 0100     		.2byte	0x1
+ 1600 010f 51       		.byte	0x51
+ 1601 0110 0F000000 		.4byte	.LVL2-1-.Ltext0
+ 1602 0114 F4010000 		.4byte	.LFE0-.Ltext0
+ 1603 0118 0400     		.2byte	0x4
+ 1604 011a F3       		.byte	0xf3
+ 1605 011b 01       		.uleb128 0x1
+ 1606 011c 51       		.byte	0x51
+ 1607 011d 9F       		.byte	0x9f
+ 1608 011e 00000000 		.4byte	0
+ 1609 0122 00000000 		.4byte	0
+ 1610              		.section	.debug_aranges,"",%progbits
+ 1611 0000 1C000000 		.4byte	0x1c
+ 1612 0004 0200     		.2byte	0x2
+ 1613 0006 00000000 		.4byte	.Ldebug_info0
+ 1614 000a 04       		.byte	0x4
+ 1615 000b 00       		.byte	0
+ 1616 000c 0000     		.2byte	0
+ 1617 000e 0000     		.2byte	0
+ 1618 0010 00000000 		.4byte	.Ltext0
+ 1619 0014 C8020000 		.4byte	.Letext0-.Ltext0
+ 1620 0018 00000000 		.4byte	0
+ 1621 001c 00000000 		.4byte	0
+ 1622              		.section	.debug_line,"",%progbits
+ 1623              	.Ldebug_line0:
+ 1624 0000 7C010000 		.section	.debug_str,"MS",%progbits,1
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 35
+
+
+ 1624      02001001 
+ 1624      00000201 
+ 1624      FB0E0D00 
+ 1624      01010101 
+ 1625              	.LASF17:
+ 1626 0000 62457468 		.ascii	"bEthernet\000"
+ 1626      65726E65 
+ 1626      7400
+ 1627              	.LASF18:
+ 1628 000a 62555342 		.ascii	"bUSB\000"
+ 1628      00
+ 1629              	.LASF20:
+ 1630 000f 4750494F 		.ascii	"GPIOPinRead\000"
+ 1630      50696E52 
+ 1630      65616400 
+ 1631              	.LASF4:
+ 1632 001b 6C6F6E67 		.ascii	"long int\000"
+ 1632      20696E74 
+ 1632      00
+ 1633              	.LASF21:
+ 1634 0024 4750494F 		.ascii	"GPIOPinWrite\000"
+ 1634      50696E57 
+ 1634      72697465 
+ 1634      00
+ 1635              	.LASF13:
+ 1636 0031 70756933 		.ascii	"pui32LEDValue\000"
+ 1636      324C4544 
+ 1636      56616C75 
+ 1636      6500
+ 1637              	.LASF26:
+ 1638 003f 443A5C55 		.ascii	"D:\\UTFPR\\SISTEMAS OPERACIONAIS\\P1_2017_NOVO_TIVA"
+ 1638      54465052 
+ 1638      5C534953 
+ 1638      54454D41 
+ 1638      53204F50 
+ 1639 006f 5F474343 		.ascii	"_GCC - 1294\000"
+ 1639      202D2031 
+ 1639      32393400 
+ 1640              	.LASF1:
+ 1641 007b 756E7369 		.ascii	"unsigned char\000"
+ 1641      676E6564 
+ 1641      20636861 
+ 1641      7200
+ 1642              	.LASF5:
+ 1643 0089 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1643      20756E73 
+ 1643      69676E65 
+ 1643      6420696E 
+ 1643      7400
+ 1644              	.LASF3:
+ 1645 009b 73686F72 		.ascii	"short unsigned int\000"
+ 1645      7420756E 
+ 1645      7369676E 
+ 1645      65642069 
+ 1645      6E7400
+ 1646              	.LASF9:
+ 1647 00ae 5F5F7569 		.ascii	"__uint32_t\000"
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 36
+
+
+ 1647      6E743332 
+ 1647      5F7400
+ 1648              	.LASF25:
+ 1649 00b9 70696E6F 		.ascii	"pinout.c\000"
+ 1649      75742E63 
+ 1649      00
+ 1650              	.LASF8:
+ 1651 00c2 756E7369 		.ascii	"unsigned int\000"
+ 1651      676E6564 
+ 1651      20696E74 
+ 1651      00
+ 1652              	.LASF7:
+ 1653 00cf 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1653      206C6F6E 
+ 1653      6720756E 
+ 1653      7369676E 
+ 1653      65642069 
+ 1654              	.LASF14:
+ 1655 00e6 75693332 		.ascii	"ui32LEDMask\000"
+ 1655      4C45444D 
+ 1655      61736B00 
+ 1656              	.LASF12:
+ 1657 00f2 4C454457 		.ascii	"LEDWrite\000"
+ 1657      72697465 
+ 1657      00
+ 1658              	.LASF6:
+ 1659 00fb 6C6F6E67 		.ascii	"long long int\000"
+ 1659      206C6F6E 
+ 1659      6720696E 
+ 1659      7400
+ 1660              	.LASF22:
+ 1661 0109 4750494F 		.ascii	"GPIOPadConfigSet\000"
+ 1661      50616443 
+ 1661      6F6E6669 
+ 1661      67536574 
+ 1661      00
+ 1662              	.LASF23:
+ 1663 011a 4750494F 		.ascii	"GPIOPinTypeEthernetLED\000"
+ 1663      50696E54 
+ 1663      79706545 
+ 1663      74686572 
+ 1663      6E65744C 
+ 1664              	.LASF11:
+ 1665 0131 4C454452 		.ascii	"LEDRead\000"
+ 1665      65616400 
+ 1666              	.LASF2:
+ 1667 0139 73686F72 		.ascii	"short int\000"
+ 1667      7420696E 
+ 1667      7400
+ 1668              	.LASF16:
+ 1669 0143 50696E6F 		.ascii	"PinoutSet\000"
+ 1669      75745365 
+ 1669      7400
+ 1670              	.LASF10:
+ 1671 014d 75696E74 		.ascii	"uint32_t\000"
+ 1671      33325F74 
+ 1671      00
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 37
+
+
+ 1672              	.LASF24:
+ 1673 0156 474E5520 		.ascii	"GNU C11 7.3.1 20180622 (release) [ARM/embedded-7-br"
+ 1673      43313120 
+ 1673      372E332E 
+ 1673      31203230 
+ 1673      31383036 
+ 1674 0189 616E6368 		.ascii	"anch revision 261907] -mcpu=cortex-m4 -mthumb -mapc"
+ 1674      20726576 
+ 1674      6973696F 
+ 1674      6E203236 
+ 1674      31393037 
+ 1675 01bc 732D6672 		.ascii	"s-frame -mthumb-interwork -gdwarf-2 -O\000"
+ 1675      616D6520 
+ 1675      2D6D7468 
+ 1675      756D622D 
+ 1675      696E7465 
+ 1676              	.LASF15:
+ 1677 01e3 75693332 		.ascii	"ui32LEDValue\000"
+ 1677      4C454456 
+ 1677      616C7565 
+ 1677      00
+ 1678              	.LASF0:
+ 1679 01f0 7369676E 		.ascii	"signed char\000"
+ 1679      65642063 
+ 1679      68617200 
+ 1680              	.LASF19:
+ 1681 01fc 5F426F6F 		.ascii	"_Bool\000"
+ 1681      6C00
+ 1682              		.ident	"GCC: (GNU Tools for Arm Embedded Processors 7-2018-q2-update) 7.3.1 20180622 (release) [AR
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s 			page 38
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 pinout.c
+C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s:15     .text:00000000 $t
+C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s:22     .text:00000000 PinoutSet
+C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s:308    .text:00000188 $d
+C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s:338    .text:000001f4 $t
+C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s:345    .text:000001f4 LEDWrite
+C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s:433    .text:00000264 $d
+C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s:438    .text:0000026c $t
+C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s:445    .text:0000026c LEDRead
+C:\Users\Diogo\AppData\Local\Temp\ccPwJEGC.s:512    .text:000002c0 $d
+
+UNDEFINED SYMBOLS
+GPIOPadConfigSet
+GPIOPinTypeEthernetLED
+GPIOPinWrite
+GPIOPinRead
