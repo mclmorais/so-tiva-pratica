@@ -4,20 +4,20 @@
 //
 // Copyright (c) 2013-2014 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
-// 
+//
 // Texas Instruments (TI) is supplying this software for use solely and
 // exclusively on TI's microcontroller products. The software is owned by
 // TI and/or its suppliers, and is protected under applicable copyright
 // laws. You may not combine this software with "viral" open-source
 // software in order to form a larger program.
-// 
+//
 // THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
 // NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
 // NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
 // A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
-// 
+//
 // This is part of revision 2.1.0.12573 of the EK-TM4C1294XL Firmware Package.
 //
 //*****************************************************************************
@@ -35,12 +35,13 @@
 #include "driverlib/uart.h"
 #include "utils/uartstdio.h"
 
+#include "pingpong-tasks1.h"
+
 #include "debug.h"
 
 #include <stdlib.h>
 
 void teste1(void);
-
 
 //*****************************************************************************
 //
@@ -67,10 +68,9 @@ uint32_t g_ui32SysClock;
 //
 //*****************************************************************************
 #ifdef DEBUG
-void
-__error__(char *pcFilename, uint32_t ui32Line)
+void __error__(char *pcFilename, uint32_t ui32Line)
 {
-		 UARTprintf("%s %d\n" ,pcFilename, ui32Line);   
+    UARTprintf("%s %d\n", pcFilename, ui32Line);
 }
 #endif
 
@@ -79,8 +79,7 @@ __error__(char *pcFilename, uint32_t ui32Line)
 // Configure the UART and its pins.  This must be called before UARTprintf().
 //
 //*****************************************************************************
-void
-ConfigureUART(void)
+void ConfigureUART(void)
 {
     //
     // Enable the GPIO Peripheral used by the UART.
@@ -114,14 +113,15 @@ ConfigureUART(void)
 //-D DEBUG -D gcc
 int main(void)
 {
-    char teste[10];//
-		uint32_t cont;
-		cont = 0;
+    char teste[10]; //
+    uint32_t cont;
+    cont = 0;
     // Run from the PLL at 120 MHz.
     //
     g_ui32SysClock = MAP_SysCtlClockFreqSet((SYSCTL_XTAL_25MHZ |
-                SYSCTL_OSC_MAIN | SYSCTL_USE_PLL |
-                SYSCTL_CFG_VCO_480), 120000000);
+                                             SYSCTL_OSC_MAIN | SYSCTL_USE_PLL |
+                                             SYSCTL_CFG_VCO_480),
+                                            120000000);
 
     //
     // Configure the device pins.
@@ -144,17 +144,11 @@ int main(void)
     //
     UARTprintf("Hello, world  TIVA CCCC !\n");
     //UARTgets(char *pcBuf, uint32_t ui32Len)teste = getchar();//
-    teste1();
-		UARTgets(teste,  cont);//teste = getchar();//
+    //teste1(); Teste de contexts
 
-		//ASSERT(teste[0] == '0');
-		ASSERT(0);
-//    UARTprintf("teste = %c\n", teste[0]);
-// UARTprintf("%s %d\n" ,__FILE__, __LINE__);   
-	 // We are finished.  Hang around flashing D1.
-    //
-		//exit(0);
-    while(1)
+    TestePingPong();
+
+    while (1)
     {
         //
         // Turn on D1.
