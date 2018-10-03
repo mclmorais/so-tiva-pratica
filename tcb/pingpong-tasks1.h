@@ -1,4 +1,3 @@
-#
 #if !defined(PINGPONG_TASKS1_H)
 #define PINGPONG_TASKS1_H
 

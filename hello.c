@@ -35,7 +35,7 @@
 #include "driverlib/uart.h"
 #include "utils/uartstdio.h"
 
-#include "pingpong-tasks1.h"
+#include "tcb/pingpong-tasks1.h"
 
 #include "debug.h"
 

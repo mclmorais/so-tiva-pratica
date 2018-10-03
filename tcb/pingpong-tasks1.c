@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "ppos.h"
+#include "../drivers/uartstdio.h"
 
 task_t Ping, Pong;
 
@@ -42,7 +43,7 @@ void BodyPong(void *arg)
     task_exit(0);
 }
 
-int TestePingPong()
+void TestePingPong()
 {
     UARTprintf("TestePingPong: Inicio\n");
 
@@ -55,4 +56,5 @@ int TestePingPong()
     task_switch(&Pong);
 
     UARTprintf("TestePingPong: Fim\n");
+    
 }
