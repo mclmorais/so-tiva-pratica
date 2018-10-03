@@ -41,8 +41,6 @@
 
 #include <stdlib.h>
 
-void teste1(void);
-
 //*****************************************************************************
 //
 //! \addtogroup example_list
@@ -113,38 +111,23 @@ void ConfigureUART(void)
 //-D DEBUG -D gcc
 int main(void)
 {
-    char teste[10]; //
-    uint32_t cont;
-    cont = 0;
     // Run from the PLL at 120 MHz.
-    //
     g_ui32SysClock = MAP_SysCtlClockFreqSet((SYSCTL_XTAL_25MHZ |
                                              SYSCTL_OSC_MAIN | SYSCTL_USE_PLL |
                                              SYSCTL_CFG_VCO_480),
                                             120000000);
 
-    //
     // Configure the device pins.
-    //
     PinoutSet(false, false);
 
-    //
     // Enable the GPIO pins for the LED D1 (PN1).
-    //
     ROM_GPIOPinTypeGPIOOutput(GPIO_PORTN_BASE, GPIO_PIN_1);
     ROM_GPIOPinTypeGPIOOutput(GPIO_PORTN_BASE, GPIO_PIN_2);
 
-    //
     // Initialize the UART.
-    //
     ConfigureUART();
 
-    //
-    // Hello!
-    //
-    UARTprintf("Hello, world  TIVA CCCC !\n");
-    //UARTgets(char *pcBuf, uint32_t ui32Len)teste = getchar();//
-    //teste1(); Teste de contexts
+    UARTprintf("----------Initialization complete----------\n");
 
     TestePingPong();
 

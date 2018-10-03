@@ -397,9 +397,9 @@
               <FilePath>.\tcb\pingpong-tasks1.c</FilePath>
             </File>
             <File>
-              <FileName>ppos.c</FileName>
+              <FileName>ppos_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\tcb\ppos.c</FilePath>
+              <FilePath>.\tcb\ppos_core.c</FilePath>
             </File>
           </Files>
         </Group>

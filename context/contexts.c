@@ -89,7 +89,7 @@ void teste_contexto(void)
     }
     else
     {
-        perror("Erro na cria��o da pilha: ");
+        perror("Erro na criacao da pilha: ");
     }
 
     makecontext(&ContextPong, (int)(*BodyPong_old), 1, "        Pong");

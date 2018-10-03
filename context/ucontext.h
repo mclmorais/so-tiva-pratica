@@ -4,16 +4,15 @@
 typedef struct stack_t
 {
 	char *ss_sp;
-	//size_t ss_size;
 	long ss_size;
 	int ss_flags;
 } stack_t;
 
 typedef struct mcontext_t
 {
-	int regPC; // program counter
-	int regSP; // stack pointer
-	int regCPSR; // status register
+	int regPC; 		// program counter
+	int regSP; 		// stack pointer
+	int regCPSR; 	// status register
 	int regR0;
 	int regR1;
 	int regR2;
@@ -35,7 +34,6 @@ typedef struct mcontext_t
 typedef struct ucontext_t
 {
 	struct ucontext_t *uc_link;
-	//sigset_t uc_sigmask;
 	stack_t uc_stack;
 	mcontext_t uc_mcontext;
 	int func;

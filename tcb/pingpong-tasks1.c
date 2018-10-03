@@ -48,12 +48,12 @@ void TestePingPong()
 {
     UARTprintf("TestePingPong: Inicio\n");
 
-    ppos_init(); //Implementar!!!!!
+    ppos_init(); 
 
-    task_create(&Ping, BodyPing, "    Ping"); //Implementar!!!!!
+    task_create(&Ping, BodyPing, "    Ping");
     task_create(&Pong, BodyPong, "        Pong");
 
-    task_switch(&Ping); //Implementar!!!!!
+    task_switch(&Ping);
     task_switch(&Pong);
 
     UARTprintf("TestePingPong: Fim\n");
