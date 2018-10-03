@@ -7,7 +7,10 @@
 #ifndef __PPOS__
 #define __PPOS__
 
+#include <stdlib.h> // Necessário para malloc()
+
 #include "ppos_data.h" // estruturas de dados necessárias
+#include "../context/ucontext.h"
 
 // macros importantes ==========================================================
 

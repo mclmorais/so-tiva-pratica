@@ -9,6 +9,7 @@
 #include "ppos.h"
 #include "../drivers/uartstdio.h"
 
+// TCBs que serão utilizados neste teste
 task_t Ping, Pong;
 
 // corpo da thread Ping

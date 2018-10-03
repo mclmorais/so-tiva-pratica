@@ -207,8 +207,10 @@ int setcontext(ucontext_t *context)
 		"MOV %[r15], %[r]"
 		: [r15] "=&r"(r15)
 		: [r] "m"(r));
-
-	///////////////////////////////////////////////////////////////////
+	
+	// Aponta o PC para a função inicial caso o contexto não
+	// tenha sido inicializado. Se já foi, aponta para o 
+	// último PC salvo
 	if (!context->initialized)
 	{
 		r = (int)context->uc_stack.ss_sp;
@@ -224,7 +226,6 @@ int setcontext(ucontext_t *context)
 			: [r15] "=&r"(r15)
 			: [r] "m"(r));
 	}
-
 	else
 	{
 		flag = 1;
@@ -244,11 +245,9 @@ int setcontext(ucontext_t *context)
 	return 0;
 }
 
-/////////////////////////////////////////////////////////////////////////
-
-//void makecontext(ucontext_t *context, int start_routine, int n_parms, char* parm)
 void makecontext(ucontext_t *context, int start_routine, int n_parms, char *parm)
 {
+	// Designa a função inicial do contexto
 	context->func = start_routine;
 }
 

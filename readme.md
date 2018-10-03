@@ -7,9 +7,8 @@ Cria *fila_0 apontando para null
 # task_create()
 
   make_context()
-  ```  task_create(&Ping, BodyPing, "    Ping");```
-
-  ```Ping``` -> struct de task que será iniciada
+  ```  task_create(&Ping, BodyPing, "    Ping");```  
+  ```Ping``` -> struct de task que será iniciada  
   ```BodyPing``` -> Ponteiro inicial de função (enviado por makecontext para o contexto da task)
   ```"Ping"``` -> Argumento NYI
 
