@@ -41,4 +41,4 @@ objects/hello.o: hello.c \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\7\ 2018-q2-update\arm-none-eabi\include\stdlib.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\7\ 2018-q2-update\arm-none-eabi\include\machine\stdlib.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\7\ 2018-q2-update\arm-none-eabi\include\alloca.h \
- contexts.h context/ucontext.h tcb/ppos_data.h inc/debug.h
+ tcb/ppos_data.h tcb/pingpong-tasks1.h inc/debug.h

@@ -36,8 +36,9 @@
 #include "utils/uartstdio.h"
 
 #include "tcb/ppos.h"
-#include "contexts.h"
+//#include "contexts.h"
 #include "tcb/ppos_data.h"
+#include "tcb/pingpong-tasks1.h"
 #include "debug.h"
 
 #include <stdlib.h>
@@ -114,11 +115,6 @@ void ConfigureUART(void)
 //-D DEBUG -D gcc
 int main(void)
 {
-    char teste[10]; //
-    uint32_t cont;
-    int teste001 = 0;
-    task_t *maintask, *task_ping, *task_pong;
-    cont = 0;
     // Run from the PLL at 120 MHz.
     //
     g_ui32SysClock = MAP_SysCtlClockFreqSet((SYSCTL_XTAL_25MHZ |
@@ -149,11 +145,7 @@ int main(void)
     //UARTgets(char *pcBuf, uint32_t ui32Len)teste = getchar();//
     //teste1(); Teste de contexts
     ppos_init();
-    task_ping = (task_t *) malloc(sizeof(task_t *));
-    task_pong = (task_t *) malloc(sizeof(task_t *));
-    teste001 = task_create(task_ping, (*BodyPing), "    Ping");
-    teste001 = task_create(task_pong, (*BodyPong), "    Ping");
-    startSwitcher();
+    TestePingPong();
     while (1)
     {
         //

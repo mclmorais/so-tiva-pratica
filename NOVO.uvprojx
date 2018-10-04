@@ -416,6 +416,16 @@
               <FileType>5</FileType>
               <FilePath>.\tcb\ppos_data.h</FilePath>
             </File>
+            <File>
+              <FileName>pingpong-tasks1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\tcb\pingpong-tasks1.c</FilePath>
+            </File>
+            <File>
+              <FileName>pingpong-tasks1.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\tcb\pingpong-tasks1.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

@@ -22,27 +22,23 @@ Dialog DLL:      TCM.DLL V1.35.1.0
  
 <h2>Project:</h2>
 D:\UTFPR\SISTEMAS OPERACIONAIS\so-tiva-pratica\NOVO.uvprojx
-Project File Date:  10/03/2018
+Project File Date:  10/04/2018
 
 <h2>Output:</h2>
 Rebuild target 'Target 1'
 compiling startup_gcc.c...
 compiling hello.c...
 tcb/ppos.h(26): warning: #warning Este codigo foi planejado para ambientes UNIX (LInux, *BSD, MacOS). A compilacao e execucao em outros ambientes e responsabilidade do usuario. [-Wcpp]
-hello.c: In function 'main':
-hello.c(156): warning: implicit declaration of function 'startSwitcher' [-Wimplicit-function-declaration]
-hello.c(120): warning: unused variable 'maintask' [-Wunused-variable]
-hello.c(119): warning: variable 'teste001' set but not used [-Wunused-but-set-variable]
-hello.c(118): warning: variable 'cont' set but not used [-Wunused-but-set-variable]
-hello.c(117): warning: unused variable 'teste' [-Wunused-variable]
 compiling uartstdio.c...
 compiling pinout.c...
 compiling cpu.c...
 assembling ucontext_asm.s...
-compiling ucontext.c...
 compiling contexts.c...
+compiling ucontext.c...
 compiling gpio.c...
 compiling queue.c...
+compiling pingpong-tasks1.c...
+tcb/ppos.h(26): warning: #warning Este codigo foi planejado para ambientes UNIX (LInux, *BSD, MacOS). A compilacao e execucao em outros ambientes e responsabilidade do usuario. [-Wcpp]
 compiling ppos.c...
 tcb/ppos.h(26): warning: #warning Este codigo foi planejado para ambientes UNIX (LInux, *BSD, MacOS). A compilacao e execucao em outros ambientes e responsabilidade do usuario. [-Wcpp]
 linking...
@@ -54,8 +50,13 @@ Configured with: /tmp/jenkins/jenkins-GCC-7-build_toolchain_docker-775_20180622_
 Thread model: single
 COMPILER_PATH=c:/program files (x86)/gnu tools arm embedded/7 2018-q2-update/bin/../lib/gcc/arm-none-eabi/7.3.1/;c:/program files (x86)/gnu tools arm embedded/7 2018-q2-update/bin/../lib/gcc/;c:/program files (x86)/gnu tools arm embedded/7 2018-q2-update/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/bin/
 LIBRARY_PATH=c:/program files (x86)/gnu tools arm embedded/7 2018-q2-update/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7e-m/;c:/program files (x86)/gnu tools arm embedded/7 2018-q2-update/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/;c:/program files (x86)/gnu tools arm embedded/7 2018-q2-update/bin/../arm-none-eabi/lib/thumb/v7e-m/;c:/program files (x86)/gnu tools arm embedded/7 2018-q2-update/bin/../lib/gcc/arm-none-eabi/7.3.1/;c:/program files (x86)/gnu tools arm embedded/7 2018-q2-update/bin/../lib/gcc/;c:/program files (x86)/gnu tools arm embedded/7 2018-q2-update/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/;c:/program files (x86)/gnu tools arm embedded/7 2018-q2-update/bin/../arm-none-eabi/lib/
- c:/program files (x86)/gnu tools arm embedded/7 2018-q2-update/bin/../lib/gcc/arm-none-eabi/7.3.1/collect2.exe -plugin c:/program files (x86)/gnu tools arm embedded/7 2018-q2-update/bin/../lib/gcc/arm-none-eabi/7.3.1/liblto_plugin-0.dll -plugin-opt=c:/program files (x86)/gnu tools arm embedded/7 2018-q2-update/bin/../lib/gcc/arm-none-eabi/7.3.1/lto-wrapper.exe -plugin-opt=-fresolution=C:\Users\Diogo\AppData\Local\Temp\ccDh9WGo.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lg_nano -plugin-opt=-pass-through=-lc_nano -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc_nano --sysroot=c:\program files (x86)\gnu tools arm embedded\7 2018-q2-update\bin\../arm-none-eabi -X -o ./Objects/NOVO.elf -L../inc;../../../driverlib/gcc; -Ldriverlib -Ldriverlib -Llibgcov -Lc:/program files (x86)/gnu tools arm embedded/7 2018-q2-update/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7e-m -Lc:/program files (x86)/gnu tools arm embedded/7 2018-q2-update/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-
-".\Objects\NOVO.elf" - 0 Error(s), 7 Warning(s).
+ c:/program files (x86)/gnu tools arm embedded/7 2018-q2-update/bin/../lib/gcc/arm-none-eabi/7.3.1/collect2.exe -plugin c:/program files (x86)/gnu tools arm embedded/7 2018-q2-update/bin/../lib/gcc/arm-none-eabi/7.3.1/liblto_plugin-0.dll -plugin-opt=c:/program files (x86)/gnu tools arm embedded/7 2018-q2-update/bin/../lib/gcc/arm-none-eabi/7.3.1/lto-wrapper.exe -plugin-opt=-fresolution=C:\Users\Diogo\AppData\Local\Temp\cczTpbEk.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lg_nano -plugin-opt=-pass-through=-lc_nano -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc_nano --sysroot=c:\program files (x86)\gnu tools arm embedded\7 2018-q2-update\bin\../arm-none-eabi -X -o ./Objects/NOVO.elf -L../inc;../../../driverlib/gcc; -Ldriverlib -Ldriverlib -Llibgcov -Lc:/program files (x86)/gnu tools arm embedded/7 2018-q2-update/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7e-m -Lc:/program files (x86)/gnu tools arm embedded/7 2018-q2-update/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-
+./objects/ucontext.o: In function `getcontext':
+D:\UTFPR\SISTEMAS OPERACIONAIS\so-tiva-pratica/context/ucontext.c:126: undefined reference to `memPC'
+./objects/ucontext.o: In function `setcontext':
+D:\UTFPR\SISTEMAS OPERACIONAIS\so-tiva-pratica/context/ucontext.c:222: undefined reference to `flag'
+collect2.exe: error: ld returned 1 exit status
+".\Objects\NOVO.elf" - 1 Error(s), 3 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -69,6 +70,7 @@ Package Vendor: Keil
   C:\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129
 
 <h2>Collection of Component Files used:</h2>
+Target not created.
 Build Time Elapsed:  00:00:03
 </pre>
 </body>

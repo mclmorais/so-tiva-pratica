@@ -1,47 +1,47 @@
-#include "contexts.h"
+//#include "contexts.h"
 
 
 
-/*****************************************************/
-void UARTprintf(const char *pcString, ...);
-int flag;
-int memPC = 0;
+///*****************************************************/
+//void UARTprintf(const char *pcString, ...);
+//int flag;
+//int memPC = 0;
 
-//-D DEBUG -D gcc CFLAGS =-g -Wall -I. -mcpu=cortex-m4 -mfloat-abi=hard
-//-D DEBUG -D gcc CFLAGS =-g -Wall -I. -mcpu=cortex-m4 -mfloat-abi=hard
-void BodyPing (void * arg)
-{
-   int i ;
+////-D DEBUG -D gcc CFLAGS =-g -Wall -I. -mcpu=cortex-m4 -mfloat-abi=hard
+////-D DEBUG -D gcc CFLAGS =-g -Wall -I. -mcpu=cortex-m4 -mfloat-abi=hard
+//void BodyPing (void * arg)
+//{
+//   int i ;
 
-   UARTprintf ("PING  %s iniciada\n", (char *) arg) ;
-   
-   for (i=0; i<6; i++)
-   {
-      UARTprintf ("PING  %s %d\n", (char *) arg, i) ;
-      swap_context_asm (&ContextPing, &ContextPong);
-   }	
-   UARTprintf ("%s FIM\n", (char *) arg) ;
+//   UARTprintf ("PING  %s iniciada\n", (char *) arg) ;
+//   
+//   for (i=0; i<6; i++)
+//   {
+//      UARTprintf ("PING  %s %d\n", (char *) arg, i) ;
+//      swap_context_asm (&ContextPing, &ContextPong);
+//   }	
+//   UARTprintf ("%s FIM\n", (char *) arg) ;
 
-   swap_context_asm (&ContextPing, &ContextMain) ;
-}
+//   swap_context_asm (&ContextPing, &ContextMain) ;
+//}
 
-/*****************************************************/
+///*****************************************************/
 
-void BodyPong (void * arg)
-{
-   int i ;
+//void BodyPong (void * arg)
+//{
+//   int i ;
 
-   UARTprintf ("PONG  %s iniciada\n", (char *) arg) ;
+//   UARTprintf ("PONG  %s iniciada\n", (char *) arg) ;
 
-   for (i=0; i<6; i++)
-   {
-      UARTprintf ("PONG  %s %d\n", (char *) arg, i) ;
-      swap_context_asm (&ContextPong, &ContextPing);
-   }
-   UARTprintf ("%s FIM\n", (char *) arg) ;
+//   for (i=0; i<6; i++)
+//   {
+//      UARTprintf ("PONG  %s %d\n", (char *) arg, i) ;
+//      swap_context_asm (&ContextPong, &ContextPing);
+//   }
+//   UARTprintf ("%s FIM\n", (char *) arg) ;
 
-   swap_context_asm (&ContextPong, &ContextMain) ;
-}
+//   swap_context_asm (&ContextPong, &ContextMain) ;
+//}
 
 /*****************************************************/
 /*
