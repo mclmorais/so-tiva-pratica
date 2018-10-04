@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccLmrqNX.s 			page 1
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccXW5yZ7.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -23,9 +23,9 @@ ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccLmrqNX.s 			page 1
   20 0006 00000000 		.4byte	.Ldebug_abbrev0
   21 000a 04       		.byte	0x4
   22 000b 01       		.uleb128 0x1
-  23 000c B8000000 		.4byte	.LASF9
+  23 000c AB000000 		.4byte	.LASF9
   24 0010 0C       		.byte	0xc
-  25 0011 B2000000 		.4byte	.LASF10
+  25 0011 A5000000 		.4byte	.LASF10
   26 0015 76000000 		.4byte	.LASF11
   27 0019 00000000 		.4byte	.Ldebug_line0
   28 001d 02       		.uleb128 0x2
@@ -55,10 +55,10 @@ ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccLmrqNX.s 			page 1
   52 0047 02       		.uleb128 0x2
   53 0048 08       		.byte	0x8
   54 0049 05       		.byte	0x5
-  55 004a 45010000 		.4byte	.LASF6
+  55 004a 38010000 		.4byte	.LASF6
   56 004e 02       		.uleb128 0x2
   57 004f 08       		.byte	0x8
-ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccLmrqNX.s 			page 2
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccXW5yZ7.s 			page 2
 
 
   58 0050 07       		.byte	0x7
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccLmrqNX.s 			page 1
  112 0006 00000000 		.4byte	.Ldebug_info0
  113 000a 04       		.byte	0x4
  114 000b 00       		.byte	0
-ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccLmrqNX.s 			page 3
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccXW5yZ7.s 			page 3
 
 
  115 000c 0000     		.2byte	0
@@ -173,43 +173,40 @@ ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccLmrqNX.s 			page 1
  137      20696E74 
  137      00
  138              	.LASF11:
- 139 0076 443A5C55 		.ascii	"D:\\UTFPR\\SISTEMAS OPERACIONAIS\\P1_2017_NOVO_TIVA"
+ 139 0076 443A5C55 		.ascii	"D:\\UTFPR\\SISTEMAS OPERACIONAIS\\so-tiva-pratica\000"
  139      54465052 
  139      5C534953 
  139      54454D41 
  139      53204F50 
-ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccLmrqNX.s 			page 4
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccXW5yZ7.s 			page 4
 
 
- 140 00a6 5F474343 		.ascii	"_GCC - 1294\000"
- 140      202D2031 
- 140      32393400 
- 141              	.LASF10:
- 142 00b2 6370752E 		.ascii	"cpu.c\000"
- 142      6300
- 143              	.LASF9:
- 144 00b8 474E5520 		.ascii	"GNU C11 7.3.1 20180622 (release) [ARM/embedded-7-br"
- 144      43313120 
- 144      372E332E 
- 144      31203230 
- 144      31383036 
- 145 00eb 616E6368 		.ascii	"anch revision 261907] -mcpu=cortex-m4 -mthumb -mapc"
- 145      20726576 
- 145      6973696F 
- 145      6E203236 
- 145      31393037 
- 146 011e 732D6672 		.ascii	"s-frame -mthumb-interwork -gdwarf-2 -O\000"
- 146      616D6520 
- 146      2D6D7468 
- 146      756D622D 
- 146      696E7465 
- 147              	.LASF6:
- 148 0145 6C6F6E67 		.ascii	"long long int\000"
- 148      206C6F6E 
- 148      6720696E 
- 148      7400
- 149              		.ident	"GCC: (GNU Tools for Arm Embedded Processors 7-2018-q2-update) 7.3.1 20180622 (release) [AR
-ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccLmrqNX.s 			page 5
+ 140              	.LASF10:
+ 141 00a5 6370752E 		.ascii	"cpu.c\000"
+ 141      6300
+ 142              	.LASF9:
+ 143 00ab 474E5520 		.ascii	"GNU C11 7.3.1 20180622 (release) [ARM/embedded-7-br"
+ 143      43313120 
+ 143      372E332E 
+ 143      31203230 
+ 143      31383036 
+ 144 00de 616E6368 		.ascii	"anch revision 261907] -mcpu=cortex-m4 -mthumb -mapc"
+ 144      20726576 
+ 144      6973696F 
+ 144      6E203236 
+ 144      31393037 
+ 145 0111 732D6672 		.ascii	"s-frame -mthumb-interwork -gdwarf-2 -O\000"
+ 145      616D6520 
+ 145      2D6D7468 
+ 145      756D622D 
+ 145      696E7465 
+ 146              	.LASF6:
+ 147 0138 6C6F6E67 		.ascii	"long long int\000"
+ 147      206C6F6E 
+ 147      6720696E 
+ 147      7400
+ 148              		.ident	"GCC: (GNU Tools for Arm Embedded Processors 7-2018-q2-update) 7.3.1 20180622 (release) [AR
+ARM GAS  C:\Users\Diogo\AppData\Local\Temp\ccXW5yZ7.s 			page 5
 
 
 DEFINED SYMBOLS

@@ -8,11 +8,18 @@
 #define __PPOS__
 
 #include "ppos_data.h" // estruturas de dados necessárias
+#include <stdio.h>
+#include <stdlib.h>
+#include "queue/queue.h"
+#include "context/ucontext.h"
 
 // macros importantes ==========================================================
 
 // habilita compatibilidade POSIX no MacOS X (para ucontext.h)
 #define _XOPEN_SOURCE 600
+#define STACKSIZE 4096		/* tamanho de pilha das threads */
+
+
 
 // este código deve ser compilado em sistemas UNIX-like
 #if defined(_WIN32) || (!defined(__unix__) && !defined(__unix) && (!defined(__APPLE__) || !defined(__MACH__)))
@@ -20,9 +27,9 @@
 #endif
 
 // otimizações podem atrapalhar código que manipula contexto
-#ifdef __OPTIMIZE__
-#error "Please do not use optimizations (-O1, -O2, ...)"
-#endif
+//#ifdef __OPTIMIZE__
+//#error "Please do not use optimizations (-O1, -O2, ...)"
+//#endif
 
 // funções gerais ==============================================================
 
@@ -30,6 +37,9 @@
 void ppos_init(void);
 
 // gerência de tarefas =========================================================
+
+
+
 
 // Cria uma nova tarefa. Retorna um ID> 0 ou erro.
 int task_create(task_t *task,               // descritor da nova tarefa
@@ -127,6 +137,10 @@ int mqueue_destroy(mqueue_t *queue);
 
 // informa o número de mensagens atualmente na fila
 int mqueue_msgs(mqueue_t *queue);
+
+void yieldmain(void);
+void startSwitcher(void);
+
 
 //==============================================================================
 

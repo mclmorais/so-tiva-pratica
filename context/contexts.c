@@ -1,13 +1,6 @@
-#include <stdio.h>
-//#include <printf.h>
-#include <stdlib.h>
-#include <ucontext.h>
+#include "contexts.h"
 
-//#define STACKSIZE 32768		/* tamanho de pilha das threads */
-#define STACKSIZE 4096		/* tamanho de pilha das threads */
-#define _XOPEN_SOURCE 600	/* para compilar no MacOS */
 
-ucontext_t ContextPing, ContextPong, ContextMain;
 
 /*****************************************************/
 void UARTprintf(const char *pcString, ...);
@@ -51,7 +44,7 @@ void BodyPong (void * arg)
 }
 
 /*****************************************************/
-
+/*
 //int main (int argc, char *argv[])
 void teste1(void){ //main1(void){
 
@@ -78,7 +71,7 @@ void teste1(void){ //main1(void){
    }
    else
    {
-      perror ("Erro na criação da pilha: ");
+      perror ("Erro na criaï¿½ï¿½o da pilha: ");
 //      exit (1);
    }
 
@@ -97,7 +90,7 @@ void teste1(void){ //main1(void){
    }
    else
    {
-      perror ("Erro na criação da pilha: ");
+      perror ("Erro na criaï¿½ï¿½o da pilha: ");
 //      exit (1);
    }
 
@@ -110,5 +103,6 @@ void teste1(void){ //main1(void){
    UARTprintf ("Main FIM\n");
 
 //   exit (0);
-	return;
+	//return;
 }
+*/

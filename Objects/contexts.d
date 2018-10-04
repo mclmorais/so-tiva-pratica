@@ -1,4 +1,4 @@
-objects/contexts.o: context/contexts.c \
+objects/contexts.o: context/contexts.c ../so-tiva-pratica/contexts.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\7\ 2018-q2-update\arm-none-eabi\include\stdio.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\7\ 2018-q2-update\arm-none-eabi\include\_ansi.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\7\ 2018-q2-update\arm-none-eabi\include\newlib.h \
@@ -32,4 +32,4 @@ objects/contexts.o: context/contexts.c \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\7\ 2018-q2-update\arm-none-eabi\include\stdlib.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\7\ 2018-q2-update\arm-none-eabi\include\machine\stdlib.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\7\ 2018-q2-update\arm-none-eabi\include\alloca.h \
- context/ucontext.h
+ ../so-tiva-pratica/context/ucontext.h

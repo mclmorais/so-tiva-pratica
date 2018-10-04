@@ -241,7 +241,7 @@
               <MiscControls>-D TARGET_IS_TM4C129_RA1 -D PART_TM4C1294NCPDT -D DEBUG</MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>.\inc</IncludePath>
+              <IncludePath>.\inc;..\so-tiva-pratica</IncludePath>
             </VariousControls>
           </Carm>
           <Aarm>
@@ -372,11 +372,6 @@
           </GroupOption>
           <Files>
             <File>
-              <FileName>contexts.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\context\contexts.c</FilePath>
-            </File>
-            <File>
               <FileName>ucontext_asm.s</FileName>
               <FileType>2</FileType>
               <FilePath>.\context\ucontext_asm.s</FilePath>
@@ -385,6 +380,56 @@
               <FileName>ucontext.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\context\ucontext.c</FilePath>
+            </File>
+            <File>
+              <FileName>ucontext.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\context\ucontext.h</FilePath>
+            </File>
+            <File>
+              <FileName>contexts.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\context\contexts.c</FilePath>
+            </File>
+            <File>
+              <FileName>contexts.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\contexts.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>tcb</GroupName>
+          <Files>
+            <File>
+              <FileName>ppos.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\tcb\ppos.c</FilePath>
+            </File>
+            <File>
+              <FileName>ppos.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\tcb\ppos.h</FilePath>
+            </File>
+            <File>
+              <FileName>ppos_data.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\tcb\ppos_data.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>queue</GroupName>
+          <Files>
+            <File>
+              <FileName>queue.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\queue\queue.c</FilePath>
+            </File>
+            <File>
+              <FileName>queue.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\queue\queue.h</FilePath>
             </File>
           </Files>
         </Group>
