@@ -71,6 +71,8 @@ int task_switch(task_t *task)
   setcontext(&task->context);
 
   current_task = task;
+
+  return 0; // NEEDED: retornar erro caso get e set context falhem
 }
 
 int task_id(void)
