@@ -127,10 +127,11 @@ int main(void)
     // Initialize the UART.
     ConfigureUART();
 
-    UARTprintf("----------Initialization complete----------\n");
+    UARTprintf("----------Inicializacao completa----------\n");
 
     TestePingPong();
 
+    UARTprintf("----------Termino: loop infinito----------\n");
     while (1)
     {
         //

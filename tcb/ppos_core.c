@@ -25,7 +25,11 @@ void ppos_init(void)
 
   main_task.id = 0;
 
+  main_task.context.initialized = 1;
+
   current_task = &main_task;
+
+  get_context_asm(&main_task.context);
 }
 
 // Cria uma nova tarefa. Retorna um ID > 0 ou erro.
@@ -51,7 +55,6 @@ int task_create(task_t *task,               // descritor da nova tarefa
   task_number++;
   task->id = task_number;
 
-  // NEEDED: Verificar se cast para int funciona
   makecontext(&task->context, (int)start_func, 1, arg);
 
   // Retorna o id da task criada
@@ -65,12 +68,11 @@ void task_exit(int exitCode)
 
 int task_switch(task_t *task)
 {
+  task_t* temp_task = current_task;
+  current_task = task;
   // Atualiza a task ativa com o contexto do controlador
   // e troca o contexto do controlador pelo contexto da task desejada
-  getcontext(&current_task->context);
-  setcontext(&task->context);
-
-  current_task = task;
+  swap_context_asm(&temp_task->context, &task->context);
 
   return 0; // NEEDED: retornar erro caso get e set context falhem
 }

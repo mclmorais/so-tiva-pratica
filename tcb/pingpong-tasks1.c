@@ -13,49 +13,45 @@
 task_t Ping, Pong;
 
 // corpo da thread Ping
-void BodyPing(void *arg)
+void BodyPing()
 {
-    int i;
-    char *name = (char *)arg;
+  int i;
 
-    UARTprintf("%s: inicio\n", name);
-    for (i = 0; i < 4; i++)
-    {
-        UARTprintf("%s: %d\n", name, i);
-        task_switch(&Pong);
-    }
-    UARTprintf("%s: fim\n", name);
-    task_exit(0);
+  UARTprintf("BodyPing Inicio");
+  for (i = 0; i < 4; i++)
+  {
+    UARTprintf("Ping: %d\n", i);
+    task_switch(&Pong);
+  }
+  UARTprintf("Ping: fim\n");
+  task_switch(&Pong);
 }
 
 // corpo da thread Pong
-void BodyPong(void *arg)
+void BodyPong()
 {
-    int i;
-    char *name = (char *)arg;
+  int i;
 
-    UARTprintf("inicio\n");
-    for (i = 0; i < 4; i++)
-    {
-        UARTprintf("%s: %d\n", name, i);
-        task_switch(&Ping);
-    }
-    UARTprintf("%s: fim\n", name);
-    task_exit(0);
+  UARTprintf("BodyPong Inicio");
+  for (i = 0; i < 4; i++)
+  {
+    UARTprintf("Pong: %d\n", i);
+    task_switch(&Ping);
+  }
+  UARTprintf("Pong: fim\n");
+  task_exit(0);
 }
 
 void TestePingPong()
 {
-    UARTprintf("TestePingPong: Inicio\n");
+  UARTprintf("TestePingPong: Inicio\n");
 
-    ppos_init();
+  ppos_init();
 
-    task_create(&Ping, BodyPing, "    Ping");
-    task_create(&Pong, BodyPong, "        Pong");
+  task_create(&Ping, BodyPing, "    Ping");
+  task_create(&Pong, BodyPong, "        Pong");
 
-    task_switch(&Ping);
-    task_switch(&Pong);
+  task_switch(&Ping);
 
-    UARTprintf("TestePingPong: Fim\n");
-
+  UARTprintf("TestePingPong: Fim\n");
 }
