@@ -35,7 +35,10 @@
 #include "driverlib/uart.h"
 #include "utils/uartstdio.h"
 
+#include "tcb/ppos.h"
 #include "tcb/pingpong-tasks1.h"
+#include "tcb/pingpong-tasks2.h"
+#include "tcb/pingpong-tasks3.h"
 
 #include "debug.h"
 
@@ -68,7 +71,7 @@ uint32_t g_ui32SysClock;
 #ifdef DEBUG
 void __error__(char *pcFilename, uint32_t ui32Line)
 {
-    UARTprintf("%s %d\n", pcFilename, ui32Line);
+  UARTprintf("%s %d\n", pcFilename, ui32Line);
 }
 #endif
 
@@ -79,28 +82,28 @@ void __error__(char *pcFilename, uint32_t ui32Line)
 //*****************************************************************************
 void ConfigureUART(void)
 {
-    //
-    // Enable the GPIO Peripheral used by the UART.
-    //
-    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+  //
+  // Enable the GPIO Peripheral used by the UART.
+  //
+  ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
 
-    //
-    // Enable UART0
-    //
-    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
+  //
+  // Enable UART0
+  //
+  ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
 
-    //
-    // Configure GPIO Pins for UART mode.
-    //
-    ROM_GPIOPinConfigure(GPIO_PA0_U0RX);
-    ROM_GPIOPinConfigure(GPIO_PA1_U0TX);
-    ROM_GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
-    ROM_GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_2);
+  //
+  // Configure GPIO Pins for UART mode.
+  //
+  ROM_GPIOPinConfigure(GPIO_PA0_U0RX);
+  ROM_GPIOPinConfigure(GPIO_PA1_U0TX);
+  ROM_GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+  ROM_GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_2);
 
-    //
-    // Initialize the UART for console I/O.
-    //
-    UARTStdioConfig(0, 115200, g_ui32SysClock);
+  //
+  // Initialize the UART for console I/O.
+  //
+  UARTStdioConfig(0, 115200, g_ui32SysClock);
 }
 
 //*****************************************************************************
@@ -111,48 +114,51 @@ void ConfigureUART(void)
 //-D DEBUG -D gcc
 int main(void)
 {
-    // Run from the PLL at 120 MHz.
-    g_ui32SysClock = MAP_SysCtlClockFreqSet((SYSCTL_XTAL_25MHZ |
-                                             SYSCTL_OSC_MAIN | SYSCTL_USE_PLL |
-                                             SYSCTL_CFG_VCO_480),
-                                            120000000);
+  // Run from the PLL at 120 MHz.
+  g_ui32SysClock = MAP_SysCtlClockFreqSet((SYSCTL_XTAL_25MHZ |
+                                           SYSCTL_OSC_MAIN | SYSCTL_USE_PLL |
+                                           SYSCTL_CFG_VCO_480),
+                                          120000000);
 
-    // Configure the device pins.
-    PinoutSet(false, false);
+  // Configure the device pins.
+  PinoutSet(false, false);
 
-    // Enable the GPIO pins for the LED D1 (PN1).
-    ROM_GPIOPinTypeGPIOOutput(GPIO_PORTN_BASE, GPIO_PIN_1);
-    ROM_GPIOPinTypeGPIOOutput(GPIO_PORTN_BASE, GPIO_PIN_2);
+  // Enable the GPIO pins for the LED D1 (PN1).
+  ROM_GPIOPinTypeGPIOOutput(GPIO_PORTN_BASE, GPIO_PIN_1);
+  ROM_GPIOPinTypeGPIOOutput(GPIO_PORTN_BASE, GPIO_PIN_2);
 
-    // Initialize the UART.
-    ConfigureUART();
+  // Initialize the UART.
+  ConfigureUART();
 
-    UARTprintf("----------Inicializacao completa----------\n");
+  ppos_init();
+  UARTprintf("----------Inicializacao completa----------\n");
 
-    TestePingPong();
+  // TestePingPong1();
+  // TestePingPong2();
+  TestePingPong3();
 
-    UARTprintf("----------Termino: loop infinito----------\n");
-    while (1)
-    {
-        //
-        // Turn on D1.
-        //
-        LEDWrite(CLP_D1, 1);
-        LEDWrite(CLP_D2, 0);
+  UARTprintf("----------Termino: loop infinito----------\n");
+  while (1)
+  {
+    //
+    // Turn on D1.
+    //
+    LEDWrite(CLP_D1, 1);
+    LEDWrite(CLP_D2, 0);
 
-        //
-        // Delay for a bit.
-        //
-        SysCtlDelay(g_ui32SysClock / 10 / 3);
+    //
+    // Delay for a bit.
+    //
+    SysCtlDelay(g_ui32SysClock / 10 / 3);
 
-        //
-        // Turn off D1.
-        //
-        LEDWrite(CLP_D1, 0);
-        LEDWrite(CLP_D2, 1);
-        //
-        // Delay for a bit.
-        //
-        SysCtlDelay(g_ui32SysClock / 10 / 3);
-    }
+    //
+    // Turn off D1.
+    //
+    LEDWrite(CLP_D1, 0);
+    LEDWrite(CLP_D2, 1);
+    //
+    // Delay for a bit.
+    //
+    SysCtlDelay(g_ui32SysClock / 10 / 3);
+  }
 }

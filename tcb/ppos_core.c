@@ -63,6 +63,7 @@ int task_create(task_t *task,               // descritor da nova tarefa
 
 void task_exit(int exitCode)
 {
+  current_task->context.initialized = 0;
   task_switch(&main_task);
 }
 

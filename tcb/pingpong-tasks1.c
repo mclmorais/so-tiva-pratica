@@ -40,13 +40,11 @@ void BodyPong()
   }
   UARTprintf("Pong: fim\n");
   task_exit(0);
-}
+}                     
 
-void TestePingPong()
+void TestePingPong1()
 {
   UARTprintf("TestePingPong: Inicio\n");
-
-  ppos_init();
 
   task_create(&Ping, BodyPing, "    Ping");
   task_create(&Pong, BodyPong, "        Pong");
