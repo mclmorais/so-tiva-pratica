@@ -11,6 +11,7 @@
 
 #include "ppos_data.h" // estruturas de dados necessárias
 #include "../context/ucontext.h"
+#include "../queue/queue.h"
 
 // macros importantes ==========================================================
 
@@ -47,7 +48,7 @@ int task_id();
 
 // libera o processador para a próxima tarefa, retornando à fila de tarefas
 // prontas ("ready queue")
-void task_yield();
+void task_yield(void);
 
 // define a prioridade estática de uma tarefa (ou a tarefa atual)
 void task_setprio(task_t *task, int prio);
@@ -125,6 +126,10 @@ int mqueue_destroy(mqueue_t *queue);
 
 // informa o número de mensagens atualmente na fila
 int mqueue_msgs(mqueue_t *queue);
+
+void dispatcher_body ();
+
+task_t* scheduler(void);
 
 //==============================================================================
 

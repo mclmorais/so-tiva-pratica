@@ -411,6 +411,31 @@
               <FileType>1</FileType>
               <FilePath>.\tcb\pingpong-tasks3.c</FilePath>
             </File>
+            <File>
+              <FileName>pingpong-dispatcher.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\tcb\pingpong-dispatcher.c</FilePath>
+            </File>
+            <File>
+              <FileName>pingpong-dispatcher.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\tcb\pingpong-dispatcher.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>queue</GroupName>
+          <Files>
+            <File>
+              <FileName>queue.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\queue\queue.c</FilePath>
+            </File>
+            <File>
+              <FileName>queue.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\queue\queue.h</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

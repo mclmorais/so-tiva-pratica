@@ -39,6 +39,7 @@
 #include "tcb/pingpong-tasks1.h"
 #include "tcb/pingpong-tasks2.h"
 #include "tcb/pingpong-tasks3.h"
+#include "tcb/pingpong-dispatcher.h"
 
 #include "debug.h"
 
@@ -135,8 +136,8 @@ int main(void)
 
   // TestePingPong1();
   // TestePingPong2();
-  TestePingPong3();
-
+ // TestePingPong3();
+  testedispatcher();
   UARTprintf("----------Termino: loop infinito----------\n");
   while (1)
   {
