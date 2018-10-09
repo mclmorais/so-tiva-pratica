@@ -19,7 +19,8 @@
 #define _XOPEN_SOURCE 600
 #define STACKSIZE 4096		/* tamanho de pilha das threads */
 
-
+int flag;
+int memPC = 0;
 
 // este código deve ser compilado em sistemas UNIX-like
 #if defined(_WIN32) || (!defined(__unix__) && !defined(__unix) && (!defined(__APPLE__) || !defined(__MACH__)))
