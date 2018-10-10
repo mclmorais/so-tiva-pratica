@@ -41,7 +41,7 @@ void queue_append(queue_t **queue, queue_t *elem)
 		temp->next = elem;
 
 		//Pega o first a partir do next do ultimo e bota no novo elemento
-		elem->next = *queue;
+		elem->next = (*queue);
 		// Faz o prev do novo apontar para o auxiliar (que até agora era o último)
 		elem->prev = temp;
 		// Faz o previous do first apontar para o novo elemento

@@ -1,6 +1,6 @@
 #include "ppos.h"
 
-#define STACKSIZE 4096 /* tamanho de pilha das threads */
+#define STACKSIZE 4100 /* tamanho de pilha das threads */
 int task_number = 0;
 
 task_t *current_task = NULL;
@@ -40,11 +40,36 @@ int task_create(task_t *task,               // descritor da nova tarefa
   return task->id;
 }
 
+void ppos_init(void)
+{
+  // Inicializa a stack do contexto main
+  // Retorna erro caso a alocação de memória falhe
+  char *stack = malloc(STACKSIZE);
+  //Configura a task main
+  if (stack)
+  {
+    main_task.context.uc_stack.ss_sp = stack;
+    main_task.context.uc_stack.ss_size = STACKSIZE;
+    main_task.context.uc_stack.ss_flags = 0;
+  }
+  else
+  {
+    return;
+  }
+  main_task.id = 0;
+  main_task.context.initialized = 1;
+  current_task = &main_task;
+  get_context_asm(&main_task.context);
+  task_create(&dispatcher_task, dispatcher_body, "    Dispatcher");
+}
+
 void task_exit(int exitCode)
 {
   current_task->context.initialized = 0;
+  user_task = current_task->prev;
   queue_remove((queue_t **)&queue_tasks, (queue_t *)current_task); //retira a task atual da queue
                                                                    //para que ela não seja mais escalonada
+  task_number--;
   if (queue_tasks == NULL)
   {
     task_switch(&main_task);
@@ -73,18 +98,19 @@ int task_id(void)
 
 void dispatcher_body()
 {
-  task_t *next = NULL;
+  task_t *next_task = NULL;
   user_task = queue_tasks;
   while (task_number > 1)
   {
-    next = scheduler(); // scheduler é uma função
-    if (next)
+    next_task = scheduler(); // scheduler é uma função
+    user_task = next_task;		// Para toda vez chamar o anterior
+		if (next_task)
     {
       // ações antes de lançar a tarefa "next", se houverem
-      task_switch(next); // transfere controle para a tarefa "next"
+      task_switch(next_task); // transfere controle para a tarefa "next"
       // ações após retornar da tarefa "next", se houverem
     }
-    next = NULL;
+    next_task = NULL;
   }
   task_exit(0); // encerra a tarefa dispatcher
 }
@@ -103,25 +129,3 @@ void task_yield(void)
   task_switch(&dispatcher_task);
 }
 
-void ppos_init(void)
-{
-  // Inicializa a stack do contexto main
-  // Retorna erro caso a alocação de memória falhe
-  char *stack = malloc(STACKSIZE);
-  //Configura a task main
-  if (stack)
-  {
-    main_task.context.uc_stack.ss_sp = stack;
-    main_task.context.uc_stack.ss_size = STACKSIZE;
-    main_task.context.uc_stack.ss_flags = 0;
-  }
-  else
-  {
-    return;
-  }
-  main_task.id = 0;
-  main_task.context.initialized = 1;
-  current_task = &main_task;
-  get_context_asm(&main_task.context);
-  task_create(&dispatcher_task, dispatcher_body, "    Dispatcher");
-}
