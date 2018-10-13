@@ -34,6 +34,8 @@ int task_create(task_t *task,               // descritor da nova tarefa
   task_number++;
   task->id = task_number;
 
+  task->context.arg = (int)arg;
+
   makecontext(&task->context, (int)start_func, 1, arg);
   queue_append((queue_t **)&queue_tasks, (queue_t *)task); //Coloca task atual na queue para ser escalonada
   // Retorna o id da task criada

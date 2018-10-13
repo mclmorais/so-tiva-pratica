@@ -38,6 +38,7 @@ typedef struct ucontext_t
 	mcontext_t uc_mcontext;
 	int func;
 	int initialized;
+	int arg;
 } ucontext_t;
 
 int getcontext(ucontext_t *);

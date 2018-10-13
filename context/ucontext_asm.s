@@ -28,6 +28,7 @@
 .set mcontext_t_regR15      ,22 * 4
 .set ucontext_t_func        ,23 * 4
 .set ucontext_t_initialized ,24 * 4
+.set ucontext_t_arg         ,25 * 4
 
 
 .global get_context_asm
@@ -101,6 +102,8 @@ inicializado:
 //	pop     {pc}
     bx     lr
 //	.end
+
+
 ////////////////////////  SWAP BEG /////////////////////
 .global swap_context_asm
 swap_context_asm:
@@ -148,6 +151,7 @@ swap_context_asm:
     mov  r0,   #1
     STR  r0 ,  [r1 ,#ucontext_t_initialized]
     ldr  R13,  [r1 ,#stack_t_Pss_sp]
+    ldr  r0,   [r1 ,#ucontext_t_arg]
     LDR  r15,  [r1 ,#ucontext_t_func]
     bx     lr
 
