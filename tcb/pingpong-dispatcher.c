@@ -39,5 +39,4 @@ void testedispatcher ()
    task_yield () ;
 
    UARTprintf ("main: fim\n");
-   task_exit(0);
 }
