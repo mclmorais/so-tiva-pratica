@@ -9,8 +9,6 @@ task_t main_task, dispatcher_task;
 task_t *queue_tasks = NULL;
 task_t *user_task = NULL;
 
-
-
 // Cria uma nova tarefa. Retorna um ID > 0 ou erro.
 int task_create(task_t *task,               // descritor da nova tarefa
                 void (*start_func)(void *), // funcao corpo da tarefa
@@ -121,7 +119,7 @@ task_t *scheduler(void)
 {
   if (user_task != NULL)
   {
-    return user_task->prev;
+    return user_task->next;
   }
   return NULL;
 }
