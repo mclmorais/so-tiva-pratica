@@ -207,9 +207,9 @@ int setcontext(ucontext_t *context)
 		"MOV %[r15], %[r]"
 		: [r15] "=&r"(r15)
 		: [r] "m"(r));
-	
+
 	// Aponta o PC para a função inicial caso o contexto não
-	// tenha sido inicializado. Se já foi, aponta para o 
+	// tenha sido inicializado. Se já foi, aponta para o
 	// último PC salvo
 	if (!context->initialized)
 	{
@@ -245,10 +245,11 @@ int setcontext(ucontext_t *context)
 	return 0;
 }
 
-void makecontext(ucontext_t *context, int start_routine, int n_parms, char *parm)
+	// Designa a função inicial do contexto junto com seus parâmetros
+void makecontext(ucontext_t *context, int start_routine, int n_parms, char *arg)
 {
-	// Designa a função inicial do contexto
 	context->func = start_routine;
+  context->arg = (int) arg;
 }
 
 int swapcontext(ucontext_t *saida, ucontext_t *entrada)

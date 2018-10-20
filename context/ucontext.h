@@ -47,7 +47,7 @@ int get_context_asm(ucontext_t *);
 int setcontext( ucontext_t *);
 int set_context_asm( ucontext_t *);
 
-void makecontext(ucontext_t *context, int bodyAdress, int n_parms, char *parm);
+void makecontext(ucontext_t *context, int bodyAdress, int n_parms, char* arg);
 
 //void makecontext(ucontext_t *context, int (*body)(), int n_parms, char *parm);
 

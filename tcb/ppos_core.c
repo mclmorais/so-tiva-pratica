@@ -34,7 +34,7 @@ void ppos_init(void)
   task_create(&dispatcher_task, dispatcher_body, "    Dispatcher");
 }
 
-// Cria uma nova tarefa. Retorna um ID > 0 ou erro.
+
 int task_create(task_t *task,               // descritor da nova tarefa
                 void (*start_func)(void *), // funcao corpo da tarefa
                 void *arg)                  // argumentos para a tarefa
@@ -57,23 +57,24 @@ int task_create(task_t *task,               // descritor da nova tarefa
   task_number++;
   task->id = task_number;
 
-  task->context.arg = (int)arg;
-
+  // Designa a função inicial do contexto junto com seus parâmetros
   makecontext(&task->context, (int)start_func, 1, arg);
-  queue_append((queue_t **)&queue_tasks, (queue_t *)task); //Coloca task atual na queue para ser escalonada
+
+  // Coloca task atual na queue para ser escalonada
+  queue_append((queue_t **)&queue_tasks, (queue_t *)task);
+
   // Retorna o id da task criada
   return task->id;
 }
 
-int task_switch(task_t *task)
+int task_switch(task_t *new_task)
 {
-  task_t *temp_task = current_task;
-  current_task = task;
-  // Atualiza a task ativa com o contexto do controlador
-  // e troca o contexto do controlador pelo contexto da task desejada
-  swap_context_asm(&temp_task->context, &task->context);
+  task_t* old_task = current_task;
+  current_task = new_task;
 
-  return 0; // NEEDED: retornar erro caso get e set context falhem
+  swap_context_asm(&old_task->context, &new_task->context);
+
+  return 0;
 }
 
 int task_id(void)

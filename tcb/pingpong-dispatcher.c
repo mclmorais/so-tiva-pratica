@@ -36,7 +36,7 @@ void testedispatcher ()
    task_create (&Pong, Body, "                Pong") ;
    task_create (&Pung, Body, "                    Pung") ;
 
-   task_yield () ;
+   task_yield() ;
 
    UARTprintf ("main: fim\n");
 }
