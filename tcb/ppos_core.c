@@ -4,10 +4,35 @@
 int task_number = 0;
 
 task_t *current_task = NULL;
-task_t main_task, dispatcher_task;
-
 task_t *queue_tasks = NULL;
 task_t *user_task = NULL;
+
+task_t main_task, dispatcher_task;
+
+void ppos_init(void)
+{
+  // Inicializa a stack do contexto main
+  // Retorna erro caso a alocação de memória falhe
+  char *stack = malloc(STACKSIZE);
+
+  //Configura a task main
+  if (stack)
+  {
+    main_task.context.uc_stack.ss_sp = stack;
+    main_task.context.uc_stack.ss_size = STACKSIZE;
+    main_task.context.uc_stack.ss_flags = 0;
+  }
+  else
+  {
+    return;
+  }
+  main_task.id = 0;
+  main_task.context.initialized = 1;
+  current_task = &main_task;
+  get_context_asm(&main_task.context);
+
+  task_create(&dispatcher_task, dispatcher_body, "    Dispatcher");
+}
 
 // Cria uma nova tarefa. Retorna um ID > 0 ou erro.
 int task_create(task_t *task,               // descritor da nova tarefa
@@ -40,27 +65,20 @@ int task_create(task_t *task,               // descritor da nova tarefa
   return task->id;
 }
 
-void ppos_init(void)
+int task_switch(task_t *task)
 {
-  // Inicializa a stack do contexto main
-  // Retorna erro caso a alocação de memória falhe
-  char *stack = malloc(STACKSIZE);
-  //Configura a task main
-  if (stack)
-  {
-    main_task.context.uc_stack.ss_sp = stack;
-    main_task.context.uc_stack.ss_size = STACKSIZE;
-    main_task.context.uc_stack.ss_flags = 0;
-  }
-  else
-  {
-    return;
-  }
-  main_task.id = 0;
-  main_task.context.initialized = 1;
-  current_task = &main_task;
-  get_context_asm(&main_task.context);
-  task_create(&dispatcher_task, dispatcher_body, "    Dispatcher");
+  task_t *temp_task = current_task;
+  current_task = task;
+  // Atualiza a task ativa com o contexto do controlador
+  // e troca o contexto do controlador pelo contexto da task desejada
+  swap_context_asm(&temp_task->context, &task->context);
+
+  return 0; // NEEDED: retornar erro caso get e set context falhem
+}
+
+int task_id(void)
+{
+  return current_task->id;
 }
 
 void task_exit(int exitCode)
@@ -78,22 +96,6 @@ void task_exit(int exitCode)
   {
     task_switch(&dispatcher_task);
   }
-}
-
-int task_switch(task_t *task)
-{
-  task_t *temp_task = current_task;
-  current_task = task;
-  // Atualiza a task ativa com o contexto do controlador
-  // e troca o contexto do controlador pelo contexto da task desejada
-  swap_context_asm(&temp_task->context, &task->context);
-
-  return 0; // NEEDED: retornar erro caso get e set context falhem
-}
-
-int task_id(void)
-{
-  return current_task->id;
 }
 
 void dispatcher_body()
