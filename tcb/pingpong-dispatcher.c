@@ -23,7 +23,7 @@ void Body (void * arg)
       task_yield ();
    }
    UARTprintf ("%s: fim\n", (char *) arg) ;
-   task_exit (0) ;
+   task_exit(0) ;
 }
 
 void testedispatcher ()

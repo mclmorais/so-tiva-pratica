@@ -1,7 +1,7 @@
 #include "ppos.h"
 
 #define STACKSIZE 4100 /* tamanho de pilha das threads */
-int task_number = 0;
+int task_count = 0;
 
 task_t *current_task = NULL;
 task_t *queue_tasks = NULL;
@@ -31,9 +31,11 @@ void ppos_init(void)
   current_task = &main_task;
   get_context_asm(&main_task.context);
 
+  // Cria task do dispatcher e o remove da fila por não ser uma task de usuário.
+  // TODO: Encontrar método melhor de criar tasks de sistema
   task_create(&dispatcher_task, dispatcher_body, "    Dispatcher");
+  queue_remove((queue_t **)&queue_tasks, (queue_t *)&dispatcher_task);
 }
-
 
 int task_create(task_t *task,               // descritor da nova tarefa
                 void (*start_func)(void *), // funcao corpo da tarefa
@@ -53,9 +55,9 @@ int task_create(task_t *task,               // descritor da nova tarefa
     return -1;
   }
 
-  // Designa um id para a task e o incrementa pra a próxima task
-  task_number++;
-  task->id = task_number;
+  // Incrementa o contador de tasks e o utiliza como id para a task atual
+  task_count++;
+  task->id = task_count;
 
   // Designa a função inicial do contexto junto com seus parâmetros
   makecontext(&task->context, (int)start_func, 1, arg);
@@ -69,7 +71,7 @@ int task_create(task_t *task,               // descritor da nova tarefa
 
 int task_switch(task_t *new_task)
 {
-  task_t* old_task = current_task;
+  task_t *old_task = current_task;
   current_task = new_task;
 
   swap_context_asm(&old_task->context, &new_task->context);
@@ -85,50 +87,39 @@ int task_id(void)
 void task_exit(int exitCode)
 {
   current_task->context.initialized = 0;
+
   user_task = current_task->prev;
-  queue_remove((queue_t **)&queue_tasks, (queue_t *)current_task); //retira a task atual da queue
-                                                                   //para que ela não seja mais escalonada
-  task_number--;
-  if (queue_tasks == NULL)
-  {
-    task_switch(&main_task);
-  }
-  else
-  {
-    task_switch(&dispatcher_task);
-  }
+  queue_remove((queue_t **)&queue_tasks, (queue_t *)current_task);
+
+  task_count--;
+
+  task_switch(queue_tasks ? &dispatcher_task : &main_task);
 }
 
 void dispatcher_body()
 {
   task_t *next_task = NULL;
-  user_task = queue_tasks;
-  while (task_number > 1)
+
+  while (task_count > 1)
   {
-    next_task = scheduler(); // scheduler é uma função
-    user_task = next_task;		// Para toda vez chamar o anterior
-		if (next_task)
-    {
-      // ações antes de lançar a tarefa "next", se houverem
-      task_switch(next_task); // transfere controle para a tarefa "next"
-      // ações após retornar da tarefa "next", se houverem
-    }
-    next_task = NULL;
+    next_task = scheduler();
+    user_task = next_task;
+
+    if (next_task)
+      task_switch(next_task);
   }
-  task_exit(0); // encerra a tarefa dispatcher
+  task_exit(0);
 }
 
 task_t *scheduler(void)
 {
-  if (user_task != NULL)
-  {
+  if (user_task == NULL)
+    return user_task = queue_tasks;
+  else
     return user_task->next;
-  }
-  return NULL;
 }
 
 void task_yield(void)
 {
   task_switch(&dispatcher_task);
 }
-
