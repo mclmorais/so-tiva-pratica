@@ -421,6 +421,11 @@
               <FileType>5</FileType>
               <FilePath>.\tcb\pingpong-dispatcher.h</FilePath>
             </File>
+            <File>
+              <FileName>pingpong-scheduler.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\tcb\pingpong-scheduler.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

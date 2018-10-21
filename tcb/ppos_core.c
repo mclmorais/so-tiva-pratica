@@ -7,6 +7,8 @@ task_t *current_task = NULL;
 task_t *queue_tasks = NULL;
 task_t *user_task = NULL;
 
+#define ALPHA 1
+
 task_t main_task, dispatcher_task;
 
 void ppos_init(void)
@@ -58,6 +60,9 @@ int task_create(task_t *task,               // descritor da nova tarefa
   // Incrementa o contador de tasks e o utiliza como id para a task atual
   task_count++;
   task->id = task_count;
+
+  // Task começa com prioridade 0 por padrão
+  task_setprio(task, 0);
 
   // Designa a função inicial do contexto junto com seus parâmetros
   makecontext(&task->context, (int)start_func, 1, arg);
@@ -113,13 +118,75 @@ void dispatcher_body()
 
 task_t *scheduler(void)
 {
+
+  int new_task_found = 0;
+
+  // Seleciona a primeira task da fila se não houver nenhuma ou escolhe uma
+  // baseado em prioridades
   if (user_task == NULL)
     return user_task = queue_tasks;
   else
-    return user_task->next;
+  {
+    //Iterador começa no começo da fila de tasks de usuário
+    task_t *i = queue_tasks;
+
+    //Task selecionada começa na task atual (assim se nenhuma task for
+    //selecionada a escolhida continua na atual)
+    task_t *selected_task = user_task;
+
+    // Seleciona a próxima task verificando prioridades (sendo a estática a
+    // prioridade designada da task e a dinâmica a prioridade levando em
+    // consideração quanto tempo faz que a task não é escalonada)
+    do
+    {
+      // Task atual não precisa ser verificada
+      if (i == selected_task)
+      {
+        i = i->next;
+        continue;
+      }
+
+      // Decide se há uma task mais prioritária que a atual (levando em conta idade)
+      if (i->dynamic_priority <= user_task->static_priority)
+      {
+        // Troca de task e reinicia sua idade; Flag é setada para este processo
+        // ocorrer apenas uma vez por loop
+        if (!new_task_found)
+        {
+          selected_task = i;
+          selected_task->dynamic_priority = selected_task->static_priority;
+          new_task_found = 1;
+        }
+      }
+      else
+      {
+        // Se a task iterada não foi selecionada, a envelhece até uma
+        // prioridade máxima de zero
+        if(i->dynamic_priority - ALPHA >= 0)
+          i->dynamic_priority -= ALPHA;
+        else
+          i->dynamic_priority = 0;
+      }
+
+      i = i->next;
+    } while (i != queue_tasks);
+
+    return selected_task;
+  }
 }
 
 void task_yield(void)
 {
   task_switch(&dispatcher_task);
+}
+
+void task_setprio(task_t *task, int prio)
+{
+  task->static_priority = prio;
+  task->dynamic_priority = prio;
+}
+
+int task_getprio(task_t *task)
+{
+  return task ? task->static_priority : current_task->static_priority;
 }

@@ -17,7 +17,8 @@ typedef struct task_t
     int id;                     // identificador da tarefa
     ucontext_t context;         // contexto armazenado da tarefa
     void *stack;                // aponta para a pilha da tarefa
-                                // ... (outros campos serão adicionados mais tarde)
+    int static_priority;        // prioridade da task
+    int dynamic_priority;       // idade da task (para envelhecimento no scheduler)
 } task_t;
 
 // estrutura que define um semáforo
