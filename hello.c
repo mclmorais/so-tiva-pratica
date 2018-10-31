@@ -34,6 +34,7 @@
 #include "driverlib/sysctl.h"
 #include "driverlib/uart.h"
 #include "utils/uartstdio.h"
+#include "driverlib/systick.h"
 
 #include "tcb/ppos.h"
 #include "tcb/pingpong-tasks1.h"
@@ -41,29 +42,15 @@
 #include "tcb/pingpong-tasks3.h"
 #include "tcb/pingpong-dispatcher.h"
 #include "tcb/pingpong-scheduler.h"
+#include "tcb/pingpong-preempcao.h"
 
 #include "debug.h"
 
 #include <stdlib.h>
 
-//*****************************************************************************
-//
-//! \addtogroup example_list
-//! <h1>Hello World (hello)</h1>
-//!
-//! A very simple ``hello world'' example.  It simply displays ``Hello World!''
-//! on the UART and is a starting point for more complicated applications.
-//!
-//! Open a terminal with 115,200 8-N-1 to see the output for this demo.
-//
-//*****************************************************************************
-
-//*****************************************************************************
-//
-// System clock rate in Hz.
-//
-//*****************************************************************************
 uint32_t g_ui32SysClock;
+
+int led_counter = 0;
 
 //*****************************************************************************
 //
@@ -77,50 +64,44 @@ void __error__(char *pcFilename, uint32_t ui32Line)
 }
 #endif
 
-//*****************************************************************************
-//
-// Configure the UART and its pins.  This must be called before UARTprintf().
-//
-//*****************************************************************************
+//void flainsqsen()
+//{
+
+//   if (++led_counter >= 100)
+//   {
+//    led_counter = 0;
+//    LEDWrite(CLP_D1, led_blink);
+//    LEDWrite(CLP_D2, !led_blink);
+//    led_blink = !led_blink;
+//   }
+//}
+
+
+
 void ConfigureUART(void)
 {
-  //
   // Enable the GPIO Peripheral used by the UART.
-  //
   ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
 
-  //
   // Enable UART0
-  //
   ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
 
-  //
   // Configure GPIO Pins for UART mode.
-  //
   ROM_GPIOPinConfigure(GPIO_PA0_U0RX);
   ROM_GPIOPinConfigure(GPIO_PA1_U0TX);
   ROM_GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
   ROM_GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_2);
 
-  //
   // Initialize the UART for console I/O.
-  //
   UARTStdioConfig(0, 115200, g_ui32SysClock);
 }
 
-//*****************************************************************************
-//
-// Print "Hello World!" to the UART on the Intelligent UART Module.
-//
-//*****************************************************************************
-//-D DEBUG -D gcc
 int main(void)
 {
   // Run from the PLL at 120 MHz.
-  g_ui32SysClock = MAP_SysCtlClockFreqSet((SYSCTL_XTAL_25MHZ |
-                                           SYSCTL_OSC_MAIN | SYSCTL_USE_PLL |
-                                           SYSCTL_CFG_VCO_480),
-                                          120000000);
+  g_ui32SysClock = MAP_SysCtlClockFreqSet((SYSCTL_XTAL_25MHZ | SYSCTL_OSC_MAIN | SYSCTL_USE_PLL | SYSCTL_CFG_VCO_480), 120000000);
+
+  SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
 
   // Configure the device pins.
   PinoutSet(false, false);
@@ -131,7 +112,11 @@ int main(void)
 
   // Initialize the UART.
   ConfigureUART();
-
+  UARTprintf("Clock:%i\n", g_ui32SysClock);
+  SysTickPeriodSet(g_ui32SysClock / 1000);
+  SysTickIntRegister(&task_interrupt);
+  SysTickEnable();
+  //SysTickIntRegister(&flainsqsen);
   ppos_init();
   UARTprintf("----------Inicializacao completa----------\n");
 
@@ -139,30 +124,36 @@ int main(void)
   // TestePingPong2();
   // TestePingPong3();
   // testedispatcher();
-  teste_scheduler();
+  //teste_scheduler();
+  PingPongPreempcao();
 
   UARTprintf("----------Termino: loop infinito----------\n");
+  //SysTickIntRegister(&flainsqsen);
   while (1)
   {
-    //
-    // Turn on D1.
-    //
-    LEDWrite(CLP_D1, 1);
-    LEDWrite(CLP_D2, 0);
+ //  ui32Value = SysTickValueGet();
 
-    //
-    // Delay for a bit.
-    //
-    SysCtlDelay(g_ui32SysClock / 10 / 3);
+    // //  UARTprintf("%i!!!\n", ___aux);
 
-    //
-    // Turn off D1.
-    //
-    LEDWrite(CLP_D1, 0);
-    LEDWrite(CLP_D2, 1);
-    //
-    // Delay for a bit.
-    //
-    SysCtlDelay(g_ui32SysClock / 10 / 3);
+    // //
+    // // Turn on D1.
+    // //
+    // LEDWrite(CLP_D1, 1);
+    // LEDWrite(CLP_D2, 0);
+
+    // //
+    // // Delay for a bit.
+    // //
+    // SysCtlDelay(g_ui32SysClock / 10 / 3);
+
+    // //
+    // // Turn off D1.
+    // //
+    // LEDWrite(CLP_D1, 0);
+    // LEDWrite(CLP_D2, 1);
+    // //
+    // // Delay for a bit.
+    // //
+    // SysCtlDelay(g_ui32SysClock / 10 / 3);
   }
 }

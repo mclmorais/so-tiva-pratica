@@ -12,6 +12,14 @@
 #include "ppos_data.h" // estruturas de dados necessárias
 #include "../context/ucontext.h"
 #include "../queue/queue.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+#include "../drivers/uartstdio.h"
+#include "../drivers/pinout.h"
+
+
 
 // macros importantes ==========================================================
 
@@ -24,6 +32,8 @@
 #endif
 
 // funções gerais ==============================================================
+
+void task_interrupt(void);
 
 // Inicializa o sistema operacional; deve ser chamada no inicio do main()
 void ppos_init(void);
