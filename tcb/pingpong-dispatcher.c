@@ -15,6 +15,7 @@ task_t Pang, Peng, Ping, Pong, Pung ;
 void Body (void * arg)
 {
    int i ;
+  asm(" cpsie i "); // enable interrupts
 
    UARTprintf ("%s: inicio\n", (char *) arg) ;
    for (i=0; i<5; i++)

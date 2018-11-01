@@ -12,6 +12,17 @@
 
 task_t Pang, Peng, Ping, Pong, Pung;
 
+int hardwork (int n)
+{
+   int i, j, soma ;
+
+   soma = 0 ;
+   for (i=0; i<n; i++)
+      for (j=0; j<n; j++)
+         soma += j ;
+   return (soma) ;
+}
+
 // corpo das threads
 void teste_scheduler_body(void *arg)
 {
@@ -21,8 +32,10 @@ void teste_scheduler_body(void *arg)
 
   for (i = 0; i < 10; i++)
   {
+    hardwork(2000);
     UARTprintf("%s: %d\n", (char *)arg, i);
-    task_yield();
+    if(wouldYouKindly)
+      task_yield();
   }
   UARTprintf("%s: fim\n", (char *)arg);
   task_exit(0);

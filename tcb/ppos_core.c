@@ -7,8 +7,11 @@ task_t *current_task = NULL;
 task_t *queue_tasks = NULL;
 task_t *user_task = NULL;
 
+int wouldYouKindly = 0;
+
 #define ALPHA 1
 
+int count = 0;
 task_t main_task, dispatcher_task;
 
 void ppos_init(void)
@@ -177,7 +180,9 @@ task_t *scheduler(void)
 
 void task_yield(void)
 {
+  wouldYouKindly = 0;
   task_switch(&dispatcher_task);
+
 }
 
 void task_setprio(task_t *task, int prio)
@@ -189,4 +194,18 @@ void task_setprio(task_t *task, int prio)
 int task_getprio(task_t *task)
 {
   return task ? task->static_priority : current_task->static_priority;
+}
+
+void task_interrupt(void)
+{
+  if(++count >= 10)
+  {
+  //  UARTprintf("----------INTERRUPT BEGIN!!!----------\n");
+    count = 0;
+    wouldYouKindly = 1;
+    //task_yield();
+   // UARTprintf("----------INTERRUPT END!!!----------\n");
+
+  }
+
 }

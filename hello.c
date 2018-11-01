@@ -33,6 +33,7 @@
 #include "driverlib/rom_map.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/uart.h"
+#include "driverlib/systick.h"
 #include "utils/uartstdio.h"
 
 #include "tcb/ppos.h"
@@ -131,6 +132,10 @@ int main(void)
 
   // Initialize the UART.
   ConfigureUART();
+
+  SysTickIntEnable();
+  SysTickPeriodSet(g_ui32SysClock / 1000);
+  SysTickEnable();
 
   ppos_init();
   UARTprintf("----------Inicializacao completa----------\n");
