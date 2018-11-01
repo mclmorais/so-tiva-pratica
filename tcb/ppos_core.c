@@ -194,7 +194,7 @@ void task_yield(void)
 
 void task_interrupt(void)
 {
-  if (++yield_counter > 50)
+  if (++yield_counter > 5000)
   {
     UARTprintf ("INTERRUPT INSIDE!\n");
     LEDWrite(CLP_D1, led_blink);
@@ -204,6 +204,12 @@ void task_interrupt(void)
     task_switch(&dispatcher_task);
     yield_counter = 0;
   }
+}
+
+void task_debug(void)
+{
+    UARTprintf ("DEBUG!!!\n");
+
 }
 
 void task_setprio(task_t *task, int prio)

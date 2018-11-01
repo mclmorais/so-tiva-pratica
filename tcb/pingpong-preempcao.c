@@ -30,7 +30,7 @@ void PingPongPreempcaoBody(void *arg)
   int i;
 
   UARTprintf("%s: inicio\n", (char *)arg);
-  for (i = 0; i < 10; i++)
+  for (i = 0; i < 100; i++)
   {
     UARTprintf("%s: %d\n", (char *)arg, i);
     hardwork(WORKLOAD);

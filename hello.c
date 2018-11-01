@@ -113,8 +113,9 @@ int main(void)
   // Initialize the UART.
   ConfigureUART();
   UARTprintf("Clock:%i\n", g_ui32SysClock);
+  SysTickIntEnable();
   SysTickPeriodSet(g_ui32SysClock / 1000);
-  SysTickIntRegister(&task_interrupt);
+  //SysTickIntRegister(&task_interrupt);
   SysTickEnable();
   //SysTickIntRegister(&flainsqsen);
   ppos_init();
@@ -157,3 +158,5 @@ int main(void)
     // SysCtlDelay(g_ui32SysClock / 10 / 3);
   }
 }
+
+

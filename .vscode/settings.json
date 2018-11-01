@@ -7,6 +7,7 @@
         "uartstdio.h\u0000tstdio.h": "c",
         "uartstdio.h\u0000uartstdio.h": "c",
         "pingpong-tasks3.h": "c",
-        "pinout.h": "c"
+        "pinout.h": "c",
+        "hw_nvic.h": "c"
     }
 }

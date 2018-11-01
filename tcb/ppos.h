@@ -34,6 +34,7 @@
 // funções gerais ==============================================================
 
 void task_interrupt(void);
+void task_debug(void);
 
 // Inicializa o sistema operacional; deve ser chamada no inicio do main()
 void ppos_init(void);
