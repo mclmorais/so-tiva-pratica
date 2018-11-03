@@ -17,7 +17,6 @@
 #include <stdbool.h>
 
 #include "../drivers/uartstdio.h"
-#include "../drivers/pinout.h"
 
 
 

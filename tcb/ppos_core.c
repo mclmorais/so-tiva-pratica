@@ -9,9 +9,6 @@ task_t *user_task = NULL;
 
 int yield_counter = 0;
 
-int led_blink = 0;
-
-
 #define ALPHA 1
 
 task_t main_task, dispatcher_task;
@@ -81,12 +78,8 @@ int task_create(task_t *task,               // descritor da nova tarefa
 
 int task_switch(task_t *new_task)
 {
-    UARTprintf ("Current Task: %s\n", current_task->context.arg);
-    UARTprintf ("Next Task: %s\n", new_task->context.arg);
-
   task_t *old_task = current_task;
   current_task = new_task;
-
   swap_context_asm(&old_task->context, &new_task->context);
 
   return 0;
@@ -111,8 +104,6 @@ void task_exit(int exitCode)
 
 void dispatcher_body()
 {
-       UARTprintf ("DISPATCHER!\n");
-
   task_t *next_task = NULL;
 
   while (task_count > 1)
@@ -172,7 +163,7 @@ task_t *scheduler(void)
       {
         // Se a task iterada não foi selecionada, a envelhece até uma
         // prioridade máxima de zero
-        if(i->dynamic_priority - ALPHA >= 0)
+        if (i->dynamic_priority - ALPHA >= 0)
           i->dynamic_priority -= ALPHA;
         else
           i->dynamic_priority = 0;
@@ -187,29 +178,13 @@ task_t *scheduler(void)
 
 void task_yield(void)
 {
-    task_switch(&dispatcher_task);
-
-
+  task_switch(&dispatcher_task);
 }
 
 void task_interrupt(void)
 {
-  if (++yield_counter > 5000)
-  {
-    UARTprintf ("INTERRUPT INSIDE!\n");
-    LEDWrite(CLP_D1, led_blink);
-    LEDWrite(CLP_D2, !led_blink);
-    led_blink = !led_blink;
-
+  if (++yield_counter > 5)
     task_switch(&dispatcher_task);
-    yield_counter = 0;
-  }
-}
-
-void task_debug(void)
-{
-    UARTprintf ("DEBUG!!!\n");
-
 }
 
 void task_setprio(task_t *task, int prio)

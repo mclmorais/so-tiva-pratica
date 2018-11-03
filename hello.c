@@ -35,7 +35,6 @@
 #include "driverlib/uart.h"
 #include "utils/uartstdio.h"
 #include "driverlib/systick.h"
-
 #include "tcb/ppos.h"
 #include "tcb/pingpong-tasks1.h"
 #include "tcb/pingpong-tasks2.h"
@@ -63,19 +62,6 @@ void __error__(char *pcFilename, uint32_t ui32Line)
   UARTprintf("%s %d\n", pcFilename, ui32Line);
 }
 #endif
-
-//void flainsqsen()
-//{
-
-//   if (++led_counter >= 100)
-//   {
-//    led_counter = 0;
-//    LEDWrite(CLP_D1, led_blink);
-//    LEDWrite(CLP_D2, !led_blink);
-//    led_blink = !led_blink;
-//   }
-//}
-
 
 
 void ConfigureUART(void)
@@ -112,51 +98,20 @@ int main(void)
 
   // Initialize the UART.
   ConfigureUART();
-  UARTprintf("Clock:%i\n", g_ui32SysClock);
+
+  // Initialize the Systick.
   SysTickIntEnable();
   SysTickPeriodSet(g_ui32SysClock / 1000);
-  //SysTickIntRegister(&task_interrupt);
   SysTickEnable();
-  //SysTickIntRegister(&flainsqsen);
+
   ppos_init();
   UARTprintf("----------Inicializacao completa----------\n");
 
-  // TestePingPong1();
-  // TestePingPong2();
-  // TestePingPong3();
-  // testedispatcher();
-  //teste_scheduler();
   PingPongPreempcao();
 
   UARTprintf("----------Termino: loop infinito----------\n");
-  //SysTickIntRegister(&flainsqsen);
-  while (1)
-  {
- //  ui32Value = SysTickValueGet();
+  while (1);
 
-    // //  UARTprintf("%i!!!\n", ___aux);
-
-    // //
-    // // Turn on D1.
-    // //
-    // LEDWrite(CLP_D1, 1);
-    // LEDWrite(CLP_D2, 0);
-
-    // //
-    // // Delay for a bit.
-    // //
-    // SysCtlDelay(g_ui32SysClock / 10 / 3);
-
-    // //
-    // // Turn off D1.
-    // //
-    // LEDWrite(CLP_D1, 0);
-    // LEDWrite(CLP_D2, 1);
-    // //
-    // // Delay for a bit.
-    // //
-    // SysCtlDelay(g_ui32SysClock / 10 / 3);
-  }
 }
 
 

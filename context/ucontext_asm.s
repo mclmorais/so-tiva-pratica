@@ -152,12 +152,12 @@ swap_context_asm:
     STR  r0 ,  [r1 ,#ucontext_t_initialized]
     ldr  R13,  [r1 ,#stack_t_Pss_sp]
     ldr  r0,   [r1 ,#ucontext_t_arg]
-    LDR  r15,  [r1 ,#ucontext_t_func]
+    LDR  r14,  [r1 ,#ucontext_t_func]
     bx     lr
 
 inicializado1:
     LDR  r13,  [r1 ,#mcontext_t_regR13]
-    LDR  r15,  [r1 ,#mcontext_t_regR14]
+    LDR  r14,  [r1 ,#mcontext_t_regR14]
     bx     lr
 
 ////////////////////////  SWAP END /////////////////////

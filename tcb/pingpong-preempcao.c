@@ -30,7 +30,7 @@ void PingPongPreempcaoBody(void *arg)
   int i;
 
   UARTprintf("%s: inicio\n", (char *)arg);
-  for (i = 0; i < 100; i++)
+  for (i = 0; i < 10; i++)
   {
     UARTprintf("%s: %d\n", (char *)arg, i);
     hardwork(WORKLOAD);
@@ -45,26 +45,11 @@ void PingPongPreempcao()
 
   ppos_init();
 
-  //   task_create (&Pang, PingPongPreempcaoBody, "    Pang") ;
-  //   task_create (&Peng, PingPongPreempcaoBody, "        Peng") ;
-  //   task_create (&Ping, PingPongPreempcaoBody, "            Ping") ;
-  //   task_create (&Pong, PingPongPreempcaoBody, "                Pong") ;
-  //   task_create (&Pung, PingPongPreempcaoBody, "                    Pung") ;
-
   task_create(&Pang, PingPongPreempcaoBody, "    Pang");
-  task_setprio(&Pang, 0);
-
   task_create(&Peng, PingPongPreempcaoBody, "        Peng");
-  task_setprio(&Peng, 2);
-
   task_create(&Ping, PingPongPreempcaoBody, "            Ping");
-  task_setprio(&Ping, 4);
-
   task_create(&Pong, PingPongPreempcaoBody, "                Pong");
-  task_setprio(&Pong, 6);
-
   task_create(&Pung, PingPongPreempcaoBody, "                    Pung");
-  task_setprio(&Pung, 8);
 
   task_yield();
 
